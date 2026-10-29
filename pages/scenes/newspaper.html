@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <script>
+  /* 雾都1937 外壳引导（wudu1937-shell-bootstrap）：顶层打开时进入外壳，保证背景音乐跨页面持续播放 */
+  (function () {
+    var p = decodeURIComponent(window.location.pathname).replace(/\\/g, '/');
+    var m = p.match(/(pages\/scenes\/[A-Za-z0-9_-]+\.html|pages\/[A-Za-z0-9_-]+\.html|index\.html)/i);
+    var rel = m ? m[1] : 'index.html';
+    if (window.top === window.self) {
+      var prefix = rel.indexOf('pages/scenes/') === 0 ? '../../'
+        : rel.indexOf('pages/') === 0 ? '../' : '';
+      window.location.replace(prefix + 'app.html#' + rel);
+    } else {
+      var notify = function () {
+        try { window.top.postMessage({ __wudu1937: 'nav', rel: rel }, '*'); } catch (e) {}
+      };
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', notify);
+      } else {
+        notify();
+      }
+    }
+  })();
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>新华日报社 · 雾都1937</title>
+  <link rel="stylesheet" href="../../assets/css/style.css">
+  <style>
+    .scene-header {
+      height: 62vh;
+      --scene-bg:
+        radial-gradient(ellipse at 50% 120%, rgba(242,232,207,0.18), transparent 60%),
+        linear-gradient(180deg, #171512 0%, #2d2a24 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .scene-header .press-mark {
+      font-size: 120px;
+      opacity: 0.12;
+      position: absolute;
+      z-index: 1;
+      animation: pressShake 0.5s steps(2) infinite;
+    }
+    @keyframes pressShake {
+      0%, 100% { transform: translate(0, 0) rotate(-2deg); }
+      50% { transform: translate(2px, 1px) rotate(2deg); }
+    }
+    .scene-title {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 72px;
+      color: var(--paper);
+      z-index: 2;
+      animation: titleIn 1.6s ease both;
+    }
+    @keyframes titleIn { from { opacity: 0; letter-spacing: 1.2em; } to { opacity: 1; letter-spacing: 0.1em; } }
+    .scene-date {
+      color: rgba(242,232,207,0.65);
+      font-size: 16px;
+      letter-spacing: 0.4em;
+      margin-top: 16px;
+      z-index: 2;
+    }
+
+    .fact-box {
+      background: var(--paper-dark);
+      padding: 32px;
+      margin: 32px 0;
+      border: 1px solid rgba(43,36,24,0.15);
+    }
+    .fact-box h4 {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 22px;
+      margin-bottom: 16px;
+    }
+    .fact-box p { line-height: 2; font-size: 15px; color: var(--ink-light); }
+
+    /* 旧报纸翻页 */
+    .newspaper-stage {
+      perspective: 1600px;
+      max-width: 520px;
+      margin: 24px auto;
+    }
+    .newspaper-mock {
+      background: #f7f2e6;
+      padding: 30px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+      transform: rotate(-1deg);
+      transition: transform 0.7s cubic-bezier(.3,.8,.3,1);
+      cursor: pointer;
+      transform-origin: left center;
+      position: relative;
+    }
+    .newspaper-mock.flipped {
+      transform: rotateY(-168deg) rotate(-1deg);
+    }
+    .newspaper-mock .masthead {
+      text-align: center;
+      border-bottom: 3px double #000;
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+    }
+    .newspaper-mock .masthead h3 {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 36px;
+      letter-spacing: 0.2em;
+      color: #1a1a1a;
+    }
+    .newspaper-mock .headline {
+      font-size: 18px;
+      font-weight: 900;
+      text-align: center;
+      margin: 16px 0;
+      line-height: 1.6;
+      color: #1a1a1a;
+    }
+    .newspaper-mock .body-text {
+      font-size: 13px;
+      line-height: 1.8;
+      color: #333;
+      text-align: justify;
+    }
+    .newspaper-back {
+      position: absolute;
+      inset: 0;
+      background: #e8dcc0;
+      padding: 30px;
+      transform: rotateY(180deg);
+      backface-visibility: hidden;
+      display: none;
+      font-size: 13px;
+      line-height: 2;
+      color: #3a3020;
+    }
+    .newspaper-mock.flipped .newspaper-back { display: block; }
+    .newspaper-mock.flipped .newspaper-front { visibility: hidden; }
+
+    .collect-btn {
+      display: inline-block;
+      margin-top: 16px;
+      padding: 10px 24px;
+      background: var(--ink);
+      color: var(--paper);
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      letter-spacing: 0.1em;
+    }
+    .collect-btn:hover { opacity: 0.9; }
+
+    .scene-nav {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      margin-top: 60px;
+      padding-top: 32px;
+      border-top: 1px solid rgba(43,36,24,0.15);
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="top-nav">
+    <a href="../../index.html" class="logo">雾都1937</a>
+    <div class="nav-links">
+      <a href="../../index.html">城厢图</a>
+      <a href="../archive.html">档案柜</a>
+      <a href="../characters.html">人物谱</a>
+      <a href="../timeline.html">时间轴</a>
+    </div>
+  </nav>
+
+  <header class="scene-header">
+    <div class="press-mark">📰</div>
+    <h1 class="scene-title">新华日报社</h1>
+    <p class="scene-date">民 国 三 十 年 · 六 月 · 六 · 晨</p>
+  </header>
+
+  <div class="page-container">
+
+    <div style="text-align: center; margin: 40px 0 8px;">
+      <button class="btn-vintage scene-enter-btn" onclick="startScene('newspaper')">
+        走进报馆 ▶
+      </button>
+    </div>
+    <button class="ambient-btn" type="button" onclick="toggleAmbient(this, 'print')">
+      🔈 开启环境音（印刷机 · 铅字）
+    </button>
+
+    <div class="fact-box">
+      <h4>📰 你手边的号外</h4>
+      <p style="text-align:center;">点击下面这份报纸，翻到背面，看看被检查官删掉的留白——</p>
+
+      <div class="newspaper-stage">
+        <div class="newspaper-mock" onclick="this.classList.toggle('flipped'); playSound('click');">
+          <div class="newspaper-front">
+            <div class="masthead">
+              <h3>新 华 日 报</h3>
+              <small style="color:#333;">中华民国三十年六月六日 · 号外</small>
+            </div>
+            <div class="headline">
+              敌机昨夜轮番轰炸重庆<br>
+              市民同仇敌忾 抗战意志愈坚
+            </div>
+            <div class="body-text">
+              【本报特讯】自昨日傍晚六时起，敌机数十架分三批袭渝，
+              投弹数百枚。我民众秩序井然，各防空洞内军民人等沉着应对。
+              本市各界今日一致表示：轰炸只能摧毁物质，绝不能动摇我抗战决心。
+              吾人唯有加倍努力，以最后胜利作答……
+            </div>
+          </div>
+          <div class="newspaper-back">
+            <p style="text-align:center; font-weight:900; margin-bottom:10px;">第三版 · 本埠消息</p>
+            <p>
+              昨夜较场口一带，民众奉令疏散，沉着应对。
+              <span style="background:#1a1a1a; color:#1a1a1a; user-select:none;">
+                █████████大隧道夜间发生拥挤，伤亡情况正在调查，数字暂不公布██████████
+              </span>
+              今日各街坊设立茶水站、救护站，市民互助互济。
+            </p>
+            <p style="margin-top:12px;">
+              编后：<span style="background:#1a1a1a; color:#1a1a1a; user-select:none;">████████████</span>
+              我们能写出的，只有这么多。写不出的，在每个人心里。
+            </p>
+            <p style="text-align:right; color:#8b2e2e; margin-top:12px;">（再点一次翻回正面）</p>
+          </div>
+        </div>
+      </div>
+      <p style="text-align:center; font-size:12px; color: var(--ink-light);">* 实际报道因新闻检查有所克制，但民间的真相，在口耳之间流传</p>
+    </div>
+
+    <div class="fact-box">
+      <h4>📜 历史现场：报馆里的战斗</h4>
+      <p>
+        《新华日报》1938年1月在武汉创刊，同年10月迁到重庆。
+        在抗战最艰难的岁月里，它是大后方最重要的舆论阵地之一。<br><br>
+        报馆的印刷车间在重庆城西的山沟里，机器24小时不停。
+        工人们轮流守在印刷机旁——轰炸来了就躲进车间旁的防空洞，
+        警报一解除立刻回到机器旁。报纸不能停，哪怕只停一天。<br><br>
+        因为他们知道：<strong>报在，人心就在。</strong>
+      </p>
+    </div>
+
+    <div class="fact-box">
+      <h4>📁 现场拾得</h4>
+      <p>
+        在校对台的抽屉里，你发现一封未寄出的信，信封上写着"给我妻"：<br><br>
+        <em style="color: var(--ink); font-size: 16px;">
+          "今天排了一整版阵亡将士的名字。我把你的哥哥也排进去了。<br>
+          手在抖，但字不能歪——他是英雄，字也得是英雄的字。"
+        </em>
+      </p>
+      <button class="collect-btn" onclick="collectItem('newspaper_letter','校对未寄出的信'); playSound('collect');">
+        收入档案柜 📂
+      </button>
+    </div>
+
+    <div class="fact-box unlock-card" style="border-left: 4px solid var(--seal);">
+      <h4>🔓 新地点解锁</h4>
+      <p>
+        老赵说，沙坪坝的学生们昨晚举着油灯在街头演剧、念报，
+        把隧道的事讲给更多人听。他让你去<strong>沙坪坝学校</strong>看看——
+        "那里亮着的，是另一种灯。"
+      </p>
+      <button class="collect-btn" style="background: var(--seal);" onclick="goToNext('newspaper','school.html')">
+        前往沙坪坝学校 →
+      </button>
+    </div>
+
+    <div class="scene-nav">
+      <a href="tunnel.html" class="btn-vintage secondary">← 上一幕：大隧道</a>
+      <a href="../../index.html" class="btn-vintage secondary">返回城厢图</a>
+    </div>
+
+  </div>
+
+  <script src="../../assets/js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      mountSceneFX(document.querySelector('.scene-header'), 'newspaper');
+    });
+  </script>
+</body>
+</html>

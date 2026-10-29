@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <script>
+  /* 雾都1937 外壳引导（wudu1937-shell-bootstrap）：顶层打开时进入外壳，保证背景音乐跨页面持续播放 */
+  (function () {
+    var p = decodeURIComponent(window.location.pathname).replace(/\\/g, '/');
+    var m = p.match(/(pages\/scenes\/[A-Za-z0-9_-]+\.html|pages\/[A-Za-z0-9_-]+\.html|index\.html)/i);
+    var rel = m ? m[1] : 'index.html';
+    if (window.top === window.self) {
+      var prefix = rel.indexOf('pages/scenes/') === 0 ? '../../'
+        : rel.indexOf('pages/') === 0 ? '../' : '';
+      window.location.replace(prefix + 'app.html#' + rel);
+    } else {
+      var notify = function () {
+        try { window.top.postMessage({ __wudu1937: 'nav', rel: rel }, '*'); } catch (e) {}
+      };
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', notify);
+      } else {
+        notify();
+      }
+    }
+  })();
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>较场口大隧道 · 雾都1937</title>
+  <link rel="stylesheet" href="../../assets/css/style.css">
+  <style>
+    .scene-header {
+      height: 62vh;
+      --scene-bg:
+        linear-gradient(180deg, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.65) 100%),
+        url('../../assets/images/tunnel-bg.jpg') center/cover no-repeat;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .scene-title {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 72px;
+      color: var(--paper);
+      z-index: 2;
+      text-shadow: 0 0 30px rgba(0,0,0,0.8);
+      animation: titleIn 1.6s ease both;
+    }
+    @keyframes titleIn { from { opacity: 0; letter-spacing: 1.2em; } to { opacity: 1; letter-spacing: 0.1em; } }
+    .scene-date {
+      color: rgba(242, 232, 207, 0.65);
+      font-size: 16px;
+      letter-spacing: 0.4em;
+      margin-top: 16px;
+      z-index: 2;
+    }
+
+    .fact-box {
+      background: var(--paper-dark);
+      padding: 32px;
+      margin: 32px 0;
+      border: 1px solid rgba(43,36,24,0.15);
+    }
+    .fact-box h4 {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 22px;
+      color: var(--moss);
+      margin-bottom: 16px;
+    }
+    .fact-box p { line-height: 2; font-size: 15px; color: var(--ink-light); }
+
+    .choice-section {
+      background: #2a2520;
+      color: var(--paper);
+      padding: 48px 32px;
+      margin: 48px 0;
+      text-align: center;
+    }
+    .choice-section h3 {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+    .choice-section .prompt {
+      color: rgba(242,232,207,0.6);
+      font-size: 14px;
+      margin-bottom: 32px;
+      letter-spacing: 0.2em;
+    }
+    .choice-buttons {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .choice-btn {
+      padding: 16px 28px;
+      background: transparent;
+      border: 1px solid rgba(242,232,207,0.4);
+      color: var(--paper);
+      font-family: 'Noto Serif SC', serif;
+      font-size: 15px;
+      cursor: pointer;
+      transition: all 0.3s;
+      max-width: 280px;
+      line-height: 1.6;
+    }
+    .choice-btn:hover {
+      background: var(--seal);
+      border-color: var(--seal);
+      transform: translateY(-2px);
+    }
+    .choice-btn.picked {
+      background: var(--seal);
+      border-color: var(--seal);
+    }
+    .result-panel {
+      display: none;
+      margin-top: 32px;
+      padding: 24px;
+      background: rgba(242,232,207,0.08);
+      border: 1px dashed rgba(242,232,207,0.2);
+      text-align: left;
+      line-height: 2;
+      font-size: 14px;
+    }
+    .result-panel.show { display: block; animation: pageFadeIn 0.8s ease; }
+
+    .collect-btn {
+      display: inline-block;
+      margin-top: 16px;
+      padding: 10px 24px;
+      background: var(--moss);
+      color: var(--paper);
+      border: none;
+      font-family: 'Noto Serif SC', serif;
+      cursor: pointer;
+      font-size: 14px;
+      letter-spacing: 0.1em;
+    }
+    .collect-btn:hover { opacity: 0.9; }
+
+    .scene-nav {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      margin-top: 60px;
+      padding-top: 32px;
+      border-top: 1px solid rgba(43,36,24,0.15);
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="top-nav">
+    <a href="../../index.html" class="logo">雾都1937</a>
+    <div class="nav-links">
+      <a href="../../index.html">城厢图</a>
+      <a href="../archive.html">档案柜</a>
+      <a href="../characters.html">人物谱</a>
+      <a href="../timeline.html">时间轴</a>
+    </div>
+  </nav>
+
+  <header class="scene-header">
+    <h1 class="scene-title">较场口大隧道</h1>
+    <p class="scene-date">民 国 三 十 年 · 六 月 五 日 · 夜</p>
+  </header>
+
+  <div class="page-container">
+
+    <div style="text-align: center; margin: 40px 0 8px;">
+      <button class="btn-vintage scene-enter-btn" onclick="startScene('tunnel')">
+        走进隧道 ▶
+      </button>
+    </div>
+    <button class="ambient-btn" type="button" onclick="toggleAmbient(this, 'rumble')">
+      🔈 开启环境音（闷响 · 远处警报）
+    </button>
+
+    <div class="fact-box">
+      <h4>📜 历史现场</h4>
+      <p>
+        1941年6月5日，日军再次对重庆发动大规模空袭。从傍晚6时到午夜12时，
+        日军飞机分三批轮番轰炸，持续时间长达6个小时。<br><br>
+        由于空袭来得突然，大量市民涌入较场口大隧道防空洞。洞内拥挤不堪，
+        通风设施严重不足。随着时间推移，氧气逐渐耗尽，人们开始窒息、踩踏——
+        这就是抗战史上震惊中外的<strong>"较场口大隧道惨案"</strong>。<br><br>
+        事后统计，遇难者人数在千人至数千人之间，至今未有精确数字。
+      </p>
+    </div>
+
+    <div class="fact-box">
+      <h4>📷 历史影像</h4>
+      <div class="photo-gallery">
+        <div class="photo-item">
+          <img src="../../assets/images/air-raid-shelter.jpg" alt="防空洞外排队人群">
+          <div class="photo-caption">
+            空袭警报响起：市民带着包裹，秩序井然地走向防空洞入口
+          </div>
+        </div>
+        <div class="photo-item">
+          <img src="../../assets/images/ruins.jpg" alt="轰炸后废墟">
+          <div class="photo-caption">
+            轰炸过后的街道：残破的建筑，瓦砾遍地，远处还有烟雾升起
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="choice-section">
+      <h3>当时，你站在洞口</h3>
+      <p class="prompt">空袭警报已响了三个小时，你闻到了烟味。你选择——</p>
+      <p class="prompt" style="color:var(--seal); font-weight:600; margin-top:10px;">（这一步必须亲历：三条出路只能选一次，选定后会作为一件"隧道碎片"收入档案柜）</p>
+
+      <div class="choice-buttons">
+        <button class="choice-btn" data-n="1" onclick="makeChoice(1, this)">
+          跟着人流往隧道深处挤<br><small>（洞里人已经很多了）</small>
+        </button>
+        <button class="choice-btn" data-n="2" onclick="makeChoice(2, this)">
+          转身往城外跑<br><small>（也许江边更安全？）</small>
+        </button>
+        <button class="choice-btn" data-n="3" onclick="makeChoice(3, this)">
+          留在洞口，帮后面的人进来<br><small>（有人还在跑）</small>
+        </button>
+      </div>
+
+      <div class="result-panel" id="result-1">
+        <strong>【结局碎片一】</strong><br>
+        你跟着人流挤进了隧道深处。越往里越闷，空气越来越稀薄。
+        有人开始咳嗽，有人开始喊"让我出去"。你摸到墙壁，全是汗——不是你一个人的。<br><br>
+        后来你才知道，那天晚上，最深处的人，再也没有走出来。
+        你活下来了，但你永远记得那种窒息的感觉。<br><br>
+        <em>——这不是游戏，这是1941年6月5日夜里，几千重庆人真实的记忆。</em>
+      </div>
+
+      <div class="result-panel" id="result-2">
+        <strong>【结局碎片二】</strong><br>
+        你转身往城外跑。街上全是人，哭喊声、脚步声、远处的爆炸声混在一起。
+        你跑到江边，看到有人在水里，有人在岸上。<br><br>
+        你不知道自己跑了多久，直到听到解除警报的声音。
+        你回头望，山城的方向，火光把云都烧红了。<br><br>
+        <em>——跑出来的人是幸运的，但那天晚上，很多人没能跑出来。</em>
+      </div>
+
+      <div class="result-panel" id="result-3">
+        <strong>【结局碎片三】</strong><br>
+        你留在洞口。一个母亲抱着孩子，你帮她把孩子接过来，往洞里递。
+        一个老头腿跑不动，你架着他往里走。<br><br>
+        你不知道自己扶了多少个人。最后一波人进去的时候，你发现自己也出不去了——
+        洞口已经被堵死了。<br><br>
+        <em>——在最黑的夜里，总有人选择拉别人一把。这座城，就是靠这样活下来的。</em>
+      </div>
+    </div>
+
+    <div class="fact-box">
+      <h4>📁 现场拾得</h4>
+      <p>
+        在隧道入口的墙角，你捡到一张被汗浸透的纸条。上面用铅笔歪歪扭扭写着：<br><br>
+        <em style="color: var(--seal); font-size: 18px;">"妈，我在较场口。别等我吃饭。——狗儿"</em>
+      </p>
+      <button class="collect-btn" onclick="collectItem('tunnel_note','狗儿的纸条'); playSound('collect');">
+        收入档案柜 📂
+      </button>
+    </div>
+
+    <div class="fact-box unlock-card" style="border-left: 4px solid var(--moss);">
+      <h4>🔓 新地点解锁</h4>
+      <p>
+        你在隧道里遇到了一个印刷工人，他告诉你——
+        明天报馆要出一期号外，记录今晚的事。如果你想知道更多，可以去
+        <strong>新华日报社</strong>看看。
+      </p>
+      <button id="go-next-btn" class="collect-btn" style="background:#6b6358; cursor:not-allowed;" onclick="if(!document.querySelector('.choice-btn.picked')){showToast('请先在上方洞口做出你的选择');return;}goToNext('tunnel','newspaper.html')">
+        请先在上方做出你的选择 →
+      </button>
+    </div>
+
+    <div class="scene-nav">
+      <a href="../../index.html" class="btn-vintage secondary">← 返回城厢图</a>
+      <a href="dock.html" class="btn-vintage secondary">上一幕：朝天门码头</a>
+    </div>
+
+  </div>
+
+  <script src="../../assets/js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      mountSceneFX(document.querySelector('.scene-header'), 'tunnel');
+    });
+
+    function makeChoice(n, btn) {
+      playSound('click');
+      // 一段历史，只能选一次：第一次选择后锁定
+      const chosen = document.querySelector('.choice-btn.picked');
+      if (chosen) return;
+      document.querySelectorAll('.choice-btn').forEach(b => {
+        b.disabled = true;
+        b.style.opacity = '0.45';
+        b.style.cursor = 'not-allowed';
+      });
+      btn.classList.add('picked');
+      btn.style.opacity = '1';
+      document.querySelectorAll('.result-panel').forEach(p => p.classList.remove('show'));
+      document.getElementById('result-' + n).classList.add('show');
+      const names = {
+        1: '隧道碎片·向深处',
+        2: '隧道碎片·向城外',
+        3: '隧道碎片·留洞口'
+      };
+      collectItem('tunnel_choice_' + n, names[n]);
+      playSound('collect');
+      const goBtn = document.getElementById('go-next-btn');
+      if (goBtn) {
+        goBtn.style.background = 'var(--seal)';
+        goBtn.style.cursor = 'pointer';
+        goBtn.textContent = '前往新华日报社 →';
+      }
+    }
+  </script>
+</body>
+</html>

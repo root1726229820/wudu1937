@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <script>
+  /* 雾都1937 外壳引导（wudu1937-shell-bootstrap）：顶层打开时进入外壳，保证背景音乐跨页面持续播放 */
+  (function () {
+    var p = decodeURIComponent(window.location.pathname).replace(/\\/g, '/');
+    var m = p.match(/(pages\/scenes\/[A-Za-z0-9_-]+\.html|pages\/[A-Za-z0-9_-]+\.html|index\.html)/i);
+    var rel = m ? m[1] : 'index.html';
+    if (window.top === window.self) {
+      var prefix = rel.indexOf('pages/scenes/') === 0 ? '../../'
+        : rel.indexOf('pages/') === 0 ? '../' : '';
+      window.location.replace(prefix + 'app.html#' + rel);
+    } else {
+      var notify = function () {
+        try { window.top.postMessage({ __wudu1937: 'nav', rel: rel }, '*'); } catch (e) {}
+      };
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', notify);
+      } else {
+        notify();
+      }
+    }
+  })();
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>朝天门码头 · 雾都1937</title>
+  <link rel="stylesheet" href="../../assets/css/style.css">
+  <style>
+    .scene-header {
+      height: 62vh;
+      --scene-bg:
+        linear-gradient(180deg, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.55) 100%),
+        url('../../assets/images/dock-bg.jpg') center/cover no-repeat;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .scene-title {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 72px;
+      color: var(--paper);
+      z-index: 2;
+      text-shadow: 0 0 30px rgba(0,0,0,0.6);
+      animation: titleIn 1.6s ease both;
+    }
+    @keyframes titleIn { from { opacity: 0; letter-spacing: 1.2em; } to { opacity: 1; letter-spacing: 0.1em; } }
+    .scene-date {
+      color: rgba(242, 232, 207, 0.75);
+      font-size: 16px;
+      letter-spacing: 0.4em;
+      margin-top: 16px;
+      z-index: 2;
+    }
+
+    .fact-box {
+      background: var(--paper-dark);
+      padding: 32px;
+      margin: 32px 0;
+      border: 1px solid rgba(43,36,24,0.15);
+    }
+    .fact-box h4 {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 22px;
+      color: var(--ink);
+      margin-bottom: 16px;
+    }
+    .fact-box p { line-height: 2; font-size: 15px; color: var(--ink-light); }
+
+    .timeline-item { display: flex; gap: 24px; margin: 24px 0; align-items: flex-start; }
+    .timeline-year { font-family: 'Ma Shan Zheng', cursive; font-size: 24px; color: var(--seal); min-width: 80px; padding-top: 4px; }
+    .timeline-content { flex: 1; line-height: 1.8; font-size: 14px; color: var(--ink-light); }
+
+    .collect-btn {
+      display: inline-block;
+      margin-top: 16px;
+      padding: 10px 24px;
+      background: var(--moss);
+      color: var(--paper);
+      border: none;
+      font-family: 'Noto Serif SC', serif;
+      cursor: pointer;
+      font-size: 14px;
+      letter-spacing: 0.1em;
+    }
+    .collect-btn:hover { opacity: 0.9; }
+
+    .scene-nav {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      margin-top: 60px;
+      padding-top: 32px;
+      border-top: 1px solid rgba(43,36,24,0.15);
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="top-nav">
+    <a href="../../index.html" class="logo">雾都1937</a>
+    <div class="nav-links">
+      <a href="../../index.html">城厢图</a>
+      <a href="../archive.html">档案柜</a>
+      <a href="../characters.html">人物谱</a>
+      <a href="../timeline.html">时间轴</a>
+    </div>
+  </nav>
+
+  <header class="scene-header">
+    <h1 class="scene-title">朝天门码头</h1>
+    <p class="scene-date">民 国 二 十 七 年 · 春</p>
+  </header>
+
+  <div class="page-container">
+
+    <div style="text-align: center; margin: 40px 0 8px;">
+      <button class="btn-vintage scene-enter-btn" onclick="startScene('dock')">
+        走进码头 ▶
+      </button>
+    </div>
+    <button class="ambient-btn" type="button" onclick="toggleAmbient(this, 'wind')">
+      🔈 开启环境音（江风 · 船笛）
+    </button>
+
+    <div class="fact-box">
+      <h4>📜 历史现场：工厂内迁</h4>
+      <p>
+        全面抗战爆发后，沿海工业基地沦为战区。国民政府组织大规模工业内迁——
+        从上海、南京、武汉等地，将工厂设备拆运至重庆、四川等地。<br><br>
+        从1938年至1940年，共有<strong>600余家民营工厂</strong>、
+        <strong>10万余吨物资</strong>沿长江迁入四川，其中大部分在重庆落地。
+        这些工厂成为战时中国的"工业命脉"，生产着武器、药品、布匹和一切战争所需。<br><br>
+        而这一切的起点，就是朝天门码头——
+        江面上船帆如织，岸上人流如潮，一座山城，就这样被硬生生拖进了战争。
+      </p>
+    </div>
+
+    <div class="fact-box">
+      <h4>📷 历史影像</h4>
+      <div class="photo-gallery">
+        <div class="photo-item">
+          <img src="../../assets/images/factory-migration.jpg" alt="工厂内迁码头">
+          <div class="photo-caption">
+            工厂内迁：码头上工人搬运沉重的机器设备，木箱和机器零件堆放在江边
+          </div>
+        </div>
+        <div class="photo-item">
+          <img src="../../assets/images/ruins.jpg" alt="轰炸后废墟">
+          <div class="photo-caption">
+            轰炸过后：残破的建筑残骸，瓦砾遍地，市民在废墟中行走
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fact-box">
+      <h4>🚢 码头时间线</h4>
+      <div class="timeline-item">
+        <div class="timeline-year">1937.11</div>
+        <div class="timeline-content">
+          上海沦陷。南京国民政府开始筹划西迁。第一批文物、档案沿长江西上。
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">1938.08</div>
+        <div class="timeline-content">
+          武汉危急。大量工厂设备、学校师生、政府机构逆流而上，抵达朝天门。
+          码头24小时不卸货，搬运工三班倒。
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">1939.05</div>
+        <div class="timeline-content">
+          重庆遭遇"五三"、"五四"大轰炸。朝天门码头周边沦为火海。
+          但轰炸过后，码头很快恢复运转——物资不能断。
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">1941.12</div>
+        <div class="timeline-content">
+          太平洋战争爆发。滇缅公路被切断，重庆成为"孤立之都"。
+          朝天门码头成为唯一的对外生命线——驼峰航线的终点。
+        </div>
+      </div>
+    </div>
+
+    <div class="fact-box">
+      <h4>📁 现场拾得</h4>
+      <p>
+        在码头的货堆旁，你发现一张被油浸透的提单，上面写着：<br><br>
+        <em style="color: var(--moss); font-size: 18px;">
+          "申新纱厂内迁设备 · 共计327箱 · 途经宜昌转运 · 押运人：林阿妹"
+        </em>
+      </p>
+      <button class="collect-btn" onclick="collectItem('dock_bill','申新纱厂内迁提单'); playSound('collect');">
+        收入档案柜 📂
+      </button>
+    </div>
+
+    <div class="fact-box unlock-card" style="border-left: 4px solid var(--seal);">
+      <h4>🔓 新地点解锁</h4>
+      <p>
+        你在码头遇到了一个从城里跑出来的妇人，她说昨晚又有空袭——
+        较场口那边的防空洞，好像出了大事。你决定去看看。
+      </p>
+      <button class="collect-btn" style="background: var(--seal);" onclick="goToNext('dock','tunnel.html')">
+        前往较场口大隧道 →
+      </button>
+    </div>
+
+    <div class="scene-nav">
+      <a href="../../index.html" class="btn-vintage secondary">← 返回城厢图</a>
+      <a href="tunnel.html" class="btn-vintage secondary" onclick="goToNext('dock','tunnel.html');return false;">下一幕：较场口大隧道 →</a>
+    </div>
+
+  </div>
+
+  <script src="../../assets/js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      mountSceneFX(document.querySelector('.scene-header'), 'dock');
+    });
+  </script>
+</body>
+</html>
