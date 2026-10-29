@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <script>
+  /* 雾都1937 外壳引导（wudu1937-shell-bootstrap）：顶层打开时进入外壳，保证背景音乐跨页面持续播放 */
+  (function () {
+    var p = decodeURIComponent(window.location.pathname).replace(/\\/g, '/');
+    var m = p.match(/(pages\/scenes\/[A-Za-z0-9_-]+\.html|pages\/[A-Za-z0-9_-]+\.html|index\.html)/i);
+    var rel = m ? m[1] : 'index.html';
+    if (window.top === window.self) {
+      var prefix = rel.indexOf('pages/scenes/') === 0 ? '../../'
+        : rel.indexOf('pages/') === 0 ? '../' : '';
+      window.location.replace(prefix + 'app.html#' + rel);
+    } else {
+      var notify = function () {
+        try { window.top.postMessage({ __wudu1937: 'nav', rel: rel }, '*'); } catch (e) {}
+      };
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', notify);
+      } else {
+        notify();
+      }
+    }
+  })();
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>战时时间轴 · 雾都1937</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <style>
+    .timeline-container {
+      position: relative;
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 20px 0;
+    }
+    .timeline-container::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: rgba(43,36,24,0.2);
+      transform: translateX(-50%);
+    }
+    .timeline-node {
+      position: relative;
+      width: 50%;
+      padding: 20px 40px;
+      box-sizing: border-box;
+    }
+    .timeline-node:nth-child(odd) {
+      left: 0;
+      text-align: right;
+    }
+    .timeline-node:nth-child(even) {
+      left: 50%;
+    }
+    .timeline-node::after {
+      content: '';
+      position: absolute;
+      top: 32px;
+      width: 14px;
+      height: 14px;
+      background: var(--seal);
+      border-radius: 50%;
+      border: 3px solid var(--paper);
+      box-shadow: 0 0 0 2px var(--seal);
+    }
+    .timeline-node:nth-child(odd)::after { right: -7px; }
+    .timeline-node:nth-child(even)::after { left: -7px; }
+
+    .timeline-date {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 22px;
+      color: var(--seal);
+      margin-bottom: 8px;
+    }
+    .timeline-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--ink);
+    }
+    .timeline-desc {
+      font-size: 13px;
+      color: var(--ink-light);
+      line-height: 1.8;
+    }
+
+    @media (max-width: 768px) {
+      .timeline-container::before { left: 20px; }
+      .timeline-node, .timeline-node:nth-child(odd), .timeline-node:nth-child(even) {
+        width: 100%;
+        left: 0;
+        text-align: left;
+        padding-left: 50px;
+      }
+      .timeline-node:nth-child(odd)::after,
+      .timeline-node:nth-child(even)::after { left: 13px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="top-nav">
+    <a href="../index.html" class="logo">雾都1937</a>
+    <div class="nav-links">
+      <a href="../index.html">城厢图</a>
+      <a href="archive.html">档案柜</a>
+      <a href="characters.html">人物谱</a>
+      <a href="timeline.html" class="active">时间轴</a>
+    </div>
+  </nav>
+
+  <div class="page-container">
+    <h2 class="section-title">战时重庆 · 时间轴</h2>
+    <p class="section-subtitle">1937 — 1946 · 一 座 城 的 九 年</p>
+
+    <div class="timeline-container">
+
+      <div class="timeline-node">
+        <div class="timeline-date">1937.07—12</div>
+        <div class="timeline-title">全面抗战爆发 · 国府移驻重庆</div>
+        <div class="timeline-desc">
+          7月7日卢沟桥事变，全面抗战爆发。11月上海沦陷、南京危急，
+          国民政府宣布移驻重庆，12月1日在重庆正式办公。
+          工厂、学校、报馆与千万民众开始沿江西迁——
+          这正是“雾都1937”的起点，也是你走进码头、走进隧道的缘由。
+        </div>
+      </div>
+
+      <div class="timeline-node">
+        <div class="timeline-date">1938.10</div>
+        <div class="timeline-title">武汉沦陷 · 工厂内迁潮</div>
+        <div class="timeline-desc">
+          武汉失守，最后一批工厂、学校、难民沿长江西上抵达重庆。
+          朝天门码头24小时不停，山城开始膨胀。
+        </div>
+      </div>
+
+      <div class="timeline-node">
+        <div class="timeline-date">1939.05</div>
+        <div class="timeline-title">"五三""五四"大轰炸</div>
+        <div class="timeline-desc">
+          日军连续两天对重庆城区大规模轰炸，市中心化为火海。
+          这是重庆第一次直面战争的残酷。
+        </div>
+      </div>
+
+      <div class="timeline-node">
+        <div class="timeline-date">1941.06.05</div>
+        <div class="timeline-title">较场口大隧道惨案</div>
+        <div class="timeline-desc">
+          日军夜袭持续6小时，大量市民涌入大隧道防空洞。
+          通风不足导致窒息踩踏，数千人遇难——重庆最黑暗的一夜。
+        </div>
+      </div>
+
+      <div class="timeline-node">
+        <div class="timeline-date">1941.12</div>
+        <div class="timeline-title">太平洋战争爆发</div>
+        <div class="timeline-desc">
+          滇缅公路被切断，重庆成为"孤立之都"。
+          驼峰航线成为唯一的对外生命线。
+        </div>
+      </div>
+
+      <div class="timeline-node">
+        <div class="timeline-date">1943.08</div>
+        <div class="timeline-title">轰炸结束</div>
+        <div class="timeline-desc">
+          因美军在太平洋战场的推进，日军停止对重庆的大规模轰炸。
+          5年半的煎熬，终于迎来了片刻安宁。
+        </div>
+      </div>
+
+      <div class="timeline-node">
+        <div class="timeline-date">1945.08</div>
+        <div class="timeline-title">抗战胜利</div>
+        <div class="timeline-desc">
+          日本宣布无条件投降。重庆全城沸腾，人们涌上街头，
+          哭着、笑着、唱着——八年了，终于等到了。
+        </div>
+      </div>
+
+      <div class="timeline-node">
+        <div class="timeline-date">1946.05</div>
+        <div class="timeline-title">还都南京</div>
+        <div class="timeline-desc">
+          国民政府迁回南京。重庆完成了它作为战时首都的使命。
+          那些内迁的工厂、学校、人，有的回去了，有的留下了。
+        </div>
+      </div>
+
+    </div>
+
+    <div class="vintage-card" style="margin-top: 48px; text-align: center;">
+      <p style="font-size: 14px; line-height: 2; color: var(--ink-light);">
+        九年。从1937到1946。<br>
+        这座城市记住的不是胜利的欢呼，而是——<br>
+        那些再也没有回来的人，和活下来的人，如何继续往前走。
+      </p>
+    </div>
+  </div>
+
+  <script src="../assets/js/main.js"></script>
+</body>
+</html>

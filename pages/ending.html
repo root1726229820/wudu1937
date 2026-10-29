@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <script>
+  /* 雾都1937 外壳引导（wudu1937-shell-bootstrap）：顶层打开时进入外壳，保证背景音乐跨页面持续播放 */
+  (function () {
+    var p = decodeURIComponent(window.location.pathname).replace(/\\/g, '/');
+    var m = p.match(/(pages\/scenes\/[A-Za-z0-9_-]+\.html|pages\/[A-Za-z0-9_-]+\.html|index\.html)/i);
+    var rel = m ? m[1] : 'index.html';
+    if (window.top === window.self) {
+      var prefix = rel.indexOf('pages/scenes/') === 0 ? '../../'
+        : rel.indexOf('pages/') === 0 ? '../' : '';
+      window.location.replace(prefix + 'app.html#' + rel);
+    } else {
+      var notify = function () {
+        try { window.top.postMessage({ __wudu1937: 'nav', rel: rel }, '*'); } catch (e) {}
+      };
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', notify);
+      } else {
+        notify();
+      }
+    }
+  })();
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>终章 · 天亮了 · 雾都1937</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <style>
+    .scene-header {
+      height: 66vh;
+      --scene-bg:
+        linear-gradient(180deg, rgba(10,8,6,0.25) 0%, rgba(20,14,8,0.6) 100%),
+        url('../assets/images/victory-bg.jpg') center/cover no-repeat;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .scene-title {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 84px;
+      color: var(--paper);
+      z-index: 2;
+      text-shadow: 0 0 40px rgba(255,180,80,0.4);
+      animation: titleIn 2s ease both;
+    }
+    @keyframes titleIn { from { opacity: 0; letter-spacing: 1.4em; } to { opacity: 1; letter-spacing: 0.15em; } }
+    .scene-date {
+      color: rgba(242, 232, 207, 0.8);
+      font-size: 17px;
+      letter-spacing: 0.4em;
+      margin-top: 18px;
+      z-index: 2;
+    }
+
+    .ending-quote-block {
+      text-align: center;
+      padding: 56px 24px;
+    }
+    .ending-quote-block .big {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 34px;
+      color: var(--ink);
+      line-height: 2.2;
+    }
+    .ending-quote-block .small {
+      margin-top: 20px;
+      color: var(--ink-light);
+      font-size: 14px;
+      letter-spacing: 0.2em;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 16px;
+      margin: 32px 0;
+    }
+
+    .choice-review {
+      background: #2a2520;
+      color: var(--paper);
+      padding: 32px;
+      margin: 32px 0;
+      line-height: 2.2;
+      font-size: 14px;
+    }
+    .choice-review h4 {
+      font-family: 'Ma Shan Zheng', cursive;
+      color: #e8c896;
+      font-size: 22px;
+      margin-bottom: 12px;
+    }
+
+    .final-actions {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 48px 0 24px;
+    }
+
+    .memorial {
+      text-align: center;
+      padding: 48px 24px;
+      margin-top: 40px;
+      border-top: 1px solid rgba(43,36,24,0.15);
+    }
+    .memorial p {
+      color: var(--ink-light);
+      line-height: 2.4;
+      font-size: 14px;
+      letter-spacing: 0.08em;
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="top-nav">
+    <a href="../index.html" class="logo">雾都1937</a>
+    <div class="nav-links">
+      <a href="../index.html">城厢图</a>
+      <a href="archive.html">档案柜</a>
+      <a href="characters.html">人物谱</a>
+      <a href="timeline.html">时间轴</a>
+    </div>
+  </nav>
+
+  <header class="scene-header" id="ending-header">
+    <h1 class="scene-title">天 亮 了</h1>
+    <p class="scene-date">民 国 三 十 四 年 · 八 月 · 十 五 日 · 夜</p>
+  </header>
+
+  <div class="page-container">
+
+    <div class="ending-quote-block">
+      <p class="big">
+        1945年8月15日，日本宣布无条件投降。<br>
+        重庆全城的汽笛，响了整整一夜。
+      </p>
+      <p class="small">听听他们后来怎么样了——</p>
+      <div style="margin-top: 32px;">
+        <button class="btn-vintage" onclick="playEnding()">🕯️ 听完这个结局</button>
+      </div>
+    </div>
+
+    <!-- 你的旅程统计 -->
+    <div class="vintage-card">
+      <h3 style="font-family:'Ma Shan Zheng',cursive; font-size:26px; text-align:center; margin-bottom:8px;">你走过的雾都</h3>
+      <p style="text-align:center; color:var(--ink-light); font-size:13px; letter-spacing:0.2em;">你在这座城里留下的每一步，都被记住了</p>
+      <div class="stats-grid" id="stats-grid"></div>
+    </div>
+
+    <!-- 隧道选择回顾 -->
+    <div class="choice-review" id="choice-review" style="display:none;">
+      <h4>你在较场口隧道的那个夜晚，选择了——</h4>
+      <div id="choice-text"></div>
+    </div>
+
+    <!-- 档案柜 CTA -->
+    <div class="vintage-card" style="text-align:center; padding:40px 28px;">
+      <h3 style="font-family:'Ma Shan Zheng',cursive; font-size:26px; margin-bottom:12px;">打开你的档案柜</h3>
+      <p style="color:var(--ink-light); font-size:14px; line-height:2; margin-bottom:24px;">
+        提单、纸条、未寄出的信、课本、身份牌、账本……<br>
+        你刚才经历的，是有些人一辈子都在经历的。
+      </p>
+      <a class="btn-vintage" href="archive.html">📁 查看我收集的档案</a>
+    </div>
+
+    <div class="final-actions">
+      <a href="../index.html" class="btn-vintage secondary">🗺️ 回到城厢图</a>
+      <button class="btn-vintage secondary" onclick="restartJourney()">🔄 重新开始</button>
+      <a href="../index.html" class="btn-vintage secondary">🏠 回到主页</a>
+    </div>
+
+    <div class="memorial">
+      <p>
+        重庆大轰炸（1938—1943），日军对重庆实施轰炸逾200次，<br>
+        平民伤亡数以万计，其中较场口大隧道惨案（1941.6.5）遇难者数千人。<br>
+        这座城没有投降。<br><br>
+        历史不是课本上的年份，<br>
+        而是一群普通人，在最黑暗时刻的选择。
+      </p>
+    </div>
+
+  </div>
+
+  <script src="../assets/js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      mountSceneFX(document.getElementById('ending-header'), 'ending');
+
+      const scenes = SCENE_CHAIN.length;
+      const done = GameState.completed.length;
+      const collected = GameState.collected.length;
+      const identityName = '约2500';
+
+      const stats = [
+        { num: scenes, total: scenes, label: '走过的地点' },
+        { num: collected, total: 7, label: '收集的档案' },
+        { num: identityName, total: '', label: '那一夜遇难同胞' },
+        { num: '1945', total: '', label: '你等到了' }
+      ];
+      const grid = document.getElementById('stats-grid');
+      stats.forEach(s => {
+        const d = document.createElement('div');
+        d.className = 'ending-stat';
+        d.innerHTML = `
+          <div class="num">${s.num}${s.total !== '' ? '<span style="font-size:20px;color:var(--ink-light);"> / ' + s.total + '</span>' : ''}</div>
+          <div class="label">${s.label}</div>`;
+        grid.appendChild(d);
+      });
+
+      // 隧道选择回顾
+      const choice = GameState.collected.find(i => i.id.indexOf('tunnel_choice_') === 0);
+      if (choice) {
+        const review = document.getElementById('choice-review');
+        const text = document.getElementById('choice-text');
+        const map = {
+          tunnel_choice_1: '【往隧道深处挤】你活了下来，但永远记得那种窒息的感觉。——那天夜里，最深处的人，没有再走出来。',
+          tunnel_choice_2: '【转身往城外跑】你跑到江边，回头望见山城的火光把云烧红。——跑出来的人是幸运的，但很多人没能跑出来。',
+          tunnel_choice_3: '【留在洞口帮人】你扶了一个又一个人，最后自己也出不去了。——在最黑的夜里，总有人选择拉别人一把。'
+        };
+        text.textContent = map[choice.id] || '';
+        review.style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html>
