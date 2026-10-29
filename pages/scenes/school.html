@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <script>
+  /* 雾都1937 外壳引导（wudu1937-shell-bootstrap）：顶层打开时进入外壳，保证背景音乐跨页面持续播放 */
+  (function () {
+    var p = decodeURIComponent(window.location.pathname).replace(/\\/g, '/');
+    var m = p.match(/(pages\/scenes\/[A-Za-z0-9_-]+\.html|pages\/[A-Za-z0-9_-]+\.html|index\.html)/i);
+    var rel = m ? m[1] : 'index.html';
+    if (window.top === window.self) {
+      var prefix = rel.indexOf('pages/scenes/') === 0 ? '../../'
+        : rel.indexOf('pages/') === 0 ? '../' : '';
+      window.location.replace(prefix + 'app.html#' + rel);
+    } else {
+      var notify = function () {
+        try { window.top.postMessage({ __wudu1937: 'nav', rel: rel }, '*'); } catch (e) {}
+      };
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', notify);
+      } else {
+        notify();
+      }
+    }
+  })();
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>沙坪坝学校 · 雾都1937</title>
+  <link rel="stylesheet" href="../../assets/css/style.css">
+  <style>
+    .scene-header {
+      height: 62vh;
+      --scene-bg:
+        linear-gradient(180deg, rgba(20,28,22,0.35) 0%, rgba(20,28,22,0.6) 100%),
+        url('../../assets/images/school-bg.jpg') center/cover no-repeat;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .scene-title {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 72px;
+      color: var(--paper);
+      z-index: 2;
+      text-shadow: 0 0 30px rgba(0,0,0,0.6);
+      animation: titleIn 1.6s ease both;
+    }
+    @keyframes titleIn { from { opacity: 0; letter-spacing: 1.2em; } to { opacity: 1; letter-spacing: 0.1em; } }
+    .scene-date {
+      color: rgba(242, 232, 207, 0.7);
+      font-size: 16px;
+      letter-spacing: 0.4em;
+      margin-top: 16px;
+      z-index: 2;
+    }
+
+    .fact-box {
+      background: var(--paper-dark);
+      padding: 32px;
+      margin: 32px 0;
+      border: 1px solid rgba(43,36,24,0.15);
+    }
+    .fact-box h4 {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 22px;
+      color: var(--moss);
+      margin-bottom: 16px;
+    }
+    .fact-box p { line-height: 2; font-size: 15px; color: var(--ink-light); }
+
+    .lamp-note {
+      background: #2a2520;
+      color: var(--paper);
+      padding: 36px 32px;
+      margin: 40px 0;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .lamp-note::before {
+      content: '🪔';
+      position: absolute;
+      font-size: 90px;
+      opacity: 0.08;
+      right: 24px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    .lamp-note p {
+      font-size: 16px;
+      line-height: 2.3;
+      position: relative;
+      z-index: 1;
+    }
+
+    .collect-btn {
+      display: inline-block;
+      margin-top: 16px;
+      padding: 10px 24px;
+      background: var(--moss);
+      color: var(--paper);
+      border: none;
+      font-family: 'Noto Serif SC', serif;
+      cursor: pointer;
+      font-size: 14px;
+      letter-spacing: 0.1em;
+    }
+    .collect-btn:hover { opacity: 0.9; }
+
+    .scene-nav {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      margin-top: 60px;
+      padding-top: 32px;
+      border-top: 1px solid rgba(43,36,24,0.15);
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="top-nav">
+    <a href="../../index.html" class="logo">雾都1937</a>
+    <div class="nav-links">
+      <a href="../../index.html">城厢图</a>
+      <a href="../archive.html">档案柜</a>
+      <a href="../characters.html">人物谱</a>
+      <a href="../timeline.html">时间轴</a>
+    </div>
+  </nav>
+
+  <header class="scene-header">
+    <h1 class="scene-title">沙坪坝学校</h1>
+    <p class="scene-date">民 国 三 十 年 · 秋 · 雨</p>
+  </header>
+
+  <div class="page-container">
+
+    <div style="text-align: center; margin: 40px 0 8px;">
+      <button class="btn-vintage scene-enter-btn" onclick="startScene('school')">
+        走进教室 ▶
+      </button>
+    </div>
+    <button class="ambient-btn" type="button" onclick="toggleAmbient(this, 'rain')">
+      🔈 开启环境音（秋雨 · 教室）
+    </button>
+
+    <div class="fact-box">
+      <h4>📜 历史现场：教育西迁</h4>
+      <p>
+        抗战时期，沿海和华北的高校大规模内迁。
+        沙坪坝成为全国闻名的"文化区"——中央大学、重庆大学、
+        南开中学等数十所学校聚集于此。<br><br>
+        这些流亡师生在艰苦的条件下坚持办学，
+        培养出了一大批战后中国建设的骨干人才。
+        他们中的很多人，后来成了新中国各条战线的开拓者。<br><br>
+        <strong>教室在，希望就在。</strong>
+      </p>
+    </div>
+
+    <div class="lamp-note">
+      <p>
+        夜里，油灯下，学生们还在传看一份白天的报纸。<br>
+        有人在报上隧道惨案的位置画了一个圈，<br>
+        旁边写了一行小字：<br>
+        <strong style="color:#e8c896;">"我们不哭，我们要让国家强到，再没有人能这样对我们。"</strong>
+      </p>
+    </div>
+
+    <div class="fact-box">
+      <h4>📷 历史影像</h4>
+      <div class="photo-gallery">
+        <div class="photo-item">
+          <figure class="photo-figure">
+            <img src="../../assets/images/school-bg.jpg" alt="流亡学校茅草教室">
+            <figcaption class="photo-caption">
+              沙坪坝的临时教室：竹篱笆、黄泥墙、茅草顶，天光照进来就是最好的灯
+            </figcaption>
+          </figure>
+          <figure class="photo-figure">
+            <img src="../../assets/images/school-hall.jpg" alt="沙坪坝校舍礼堂">
+            <figcaption class="photo-caption">
+              文化区的校舍：轰炸间隙建起的砖石礼堂，台阶上的人来了又走，窗里的灯从没熄
+            </figcaption>
+          </figure>
+        </div>
+        <div class="photo-item">
+          <figure class="photo-figure">
+            <img src="../../assets/images/char-student.jpg" alt="流亡学生">
+            <figcaption class="photo-caption">
+              流亡学生：从沿海沿江溯江而上的少年，带着课本，也带着一个国家的将来
+            </figcaption>
+          </figure>
+        </div>
+      </div>
+    </div>
+
+    <div class="fact-box">
+      <h4>📁 现场拾得</h4>
+      <p>
+        在教室的墙角，你捡到一本翻烂了的课本，扉页上写着：<br><br>
+        <em style="color: var(--moss); font-size: 18px;">
+          "为中华之崛起而读书 —— 周恩来"
+        </em>
+      </p>
+      <button class="collect-btn" onclick="collectItem('school_book','流亡学生的课本'); playSound('collect');">
+        收入档案柜 📂
+      </button>
+    </div>
+
+    <div class="fact-box unlock-card" style="border-left: 4px solid var(--seal);">
+      <h4>🔓 新地点解锁</h4>
+      <p>
+        方先生说，班上三个男生投考了空军，正在<strong>广阳坝机场</strong>待命。
+        他们留下话："我们在天上守着，你们在地上把书念完。"
+      </p>
+      <button class="collect-btn" style="background: var(--seal);" onclick="goToNext('school','airport.html')">
+        前往广阳坝机场 →
+      </button>
+    </div>
+
+    <div class="scene-nav">
+      <a href="newspaper.html" class="btn-vintage secondary">← 上一幕：新华日报社</a>
+      <a href="../../index.html" class="btn-vintage secondary">返回城厢图</a>
+    </div>
+
+  </div>
+
+  <script src="../../assets/js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      mountSceneFX(document.querySelector('.scene-header'), 'school');
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <script>
+  /* 雾都1937 外壳引导（wudu1937-shell-bootstrap）：顶层打开时进入外壳，保证背景音乐跨页面持续播放 */
+  (function () {
+    var p = decodeURIComponent(window.location.pathname).replace(/\\/g, '/');
+    var m = p.match(/(pages\/scenes\/[A-Za-z0-9_-]+\.html|pages\/[A-Za-z0-9_-]+\.html|index\.html)/i);
+    var rel = m ? m[1] : 'index.html';
+    if (window.top === window.self) {
+      var prefix = rel.indexOf('pages/scenes/') === 0 ? '../../'
+        : rel.indexOf('pages/') === 0 ? '../' : '';
+      window.location.replace(prefix + 'app.html#' + rel);
+    } else {
+      var notify = function () {
+        try { window.top.postMessage({ __wudu1937: 'nav', rel: rel }, '*'); } catch (e) {}
+      };
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', notify);
+      } else {
+        notify();
+      }
+    }
+  })();
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>广阳坝机场 · 雾都1937</title>
+  <link rel="stylesheet" href="../../assets/css/style.css">
+  <style>
+    .scene-header {
+      height: 62vh;
+      --scene-bg:
+        linear-gradient(180deg, rgba(30,40,50,0.3) 0%, rgba(20,26,32,0.6) 100%),
+        url('../../assets/images/airport-bg.jpg') center/cover no-repeat;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .scene-title {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 72px;
+      color: var(--paper);
+      z-index: 2;
+      text-shadow: 0 0 30px rgba(0,0,0,0.6);
+      animation: titleIn 1.6s ease both;
+    }
+    @keyframes titleIn { from { opacity: 0; letter-spacing: 1.2em; } to { opacity: 1; letter-spacing: 0.1em; } }
+    .scene-date {
+      color: rgba(242, 232, 207, 0.75);
+      font-size: 16px;
+      letter-spacing: 0.4em;
+      margin-top: 16px;
+      z-index: 2;
+    }
+
+    .fact-box {
+      background: var(--paper-dark);
+      padding: 32px;
+      margin: 32px 0;
+      border: 1px solid rgba(43,36,24,0.15);
+    }
+    .fact-box h4 {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 22px;
+      margin-bottom: 16px;
+    }
+    .fact-box p { line-height: 2; font-size: 15px; color: var(--ink-light); }
+
+    .stat-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px;
+      margin: 24px 0;
+    }
+    .stat-cell {
+      background: #2a2520;
+      color: var(--paper);
+      padding: 24px 16px;
+      text-align: center;
+    }
+    .stat-cell .n {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 34px;
+      color: #e8c896;
+    }
+    .stat-cell .d {
+      font-size: 12px;
+      opacity: 0.7;
+      margin-top: 6px;
+      letter-spacing: 0.15em;
+    }
+
+    .collect-btn {
+      display: inline-block;
+      margin-top: 16px;
+      padding: 10px 24px;
+      background: #4a5a6a;
+      color: var(--paper);
+      border: none;
+      font-family: 'Noto Serif SC', serif;
+      cursor: pointer;
+      font-size: 14px;
+      letter-spacing: 0.1em;
+    }
+    .collect-btn:hover { opacity: 0.9; }
+
+    .scene-nav {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      margin-top: 60px;
+      padding-top: 32px;
+      border-top: 1px solid rgba(43,36,24,0.15);
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="top-nav">
+    <a href="../../index.html" class="logo">雾都1937</a>
+    <div class="nav-links">
+      <a href="../../index.html">城厢图</a>
+      <a href="../archive.html">档案柜</a>
+      <a href="../characters.html">人物谱</a>
+      <a href="../timeline.html">时间轴</a>
+    </div>
+  </nav>
+
+  <header class="scene-header">
+    <h1 class="scene-title">广阳坝机场</h1>
+    <p class="scene-date">民 国 三 十 二 年 · 秋</p>
+  </header>
+
+  <div class="page-container">
+
+    <div style="text-align: center; margin: 40px 0 8px;">
+      <button class="btn-vintage scene-enter-btn" onclick="startScene('airport')">
+        走上跑道 ▶
+      </button>
+    </div>
+    <button class="ambient-btn" type="button" onclick="toggleAmbient(this, 'plane')">
+      🔈 开启环境音（风 · 飞机掠过）
+    </button>
+
+    <div class="fact-box">
+      <h4>📜 历史现场：驼峰航线</h4>
+      <p>
+        1942年滇缅公路被日军切断后，中美两国开辟了从印度阿萨姆邦
+        飞越喜马拉雅山脉直达中国昆明、重庆的空中补给线——
+        因航线飞越海拔4000-6000米的高山，被称为<strong>"驼峰航线"</strong>。
+      </p>
+      <div class="stat-row">
+        <div class="stat-cell"><div class="n">65万吨</div><div class="d">战略物资</div></div>
+        <div class="stat-cell"><div class="n">600+</div><div class="d">损失飞机</div></div>
+        <div class="stat-cell"><div class="n">近2000</div><div class="d">牺牲飞行员</div></div>
+      </div>
+      <p>
+        航线下方的山谷里，堆满了飞机残骸，在阳光下闪着铝光——
+        飞行员们把那条山谷叫做<strong>"铝谷"</strong>。
+      </p>
+    </div>
+
+    <div class="fact-box">
+      <h4>📷 历史影像</h4>
+      <div class="photo-gallery">
+        <div class="photo-item">
+          <figure class="photo-figure">
+            <img src="../../assets/images/airport-bg.jpg" alt="广阳坝机场">
+            <figcaption class="photo-caption">
+              广阳坝机场：晨雾中的跑道，机械师在运输机起飞前做最后检查
+            </figcaption>
+          </figure>
+          <figure class="photo-figure">
+            <img src="../../assets/images/airport-hangar.jpg" alt="广阳坝机库施工">
+            <figcaption class="photo-caption">
+              正在修的机库：工匠用竹木搭起拱形机棚，碎石满地，他们一边挨炸，一边给飞机修一个家
+            </figcaption>
+          </figure>
+        </div>
+        <div class="photo-item">
+          <figure class="photo-figure">
+            <img src="../../assets/images/char-pilot.jpg" alt="空军家属">
+            <figcaption class="photo-caption">
+              空军家属：她们每天在坝子边数飞机，等一架编号熟悉的飞机回来
+            </figcaption>
+          </figure>
+        </div>
+      </div>
+    </div>
+
+    <div class="fact-box">
+      <h4>📁 现场拾得</h4>
+      <p>
+        在机场旁的临时营房里，你发现一块飞行员的身份牌，铜牌上刻着：<br><br>
+        <em style="color: #4a5a6a; font-size: 18px;">"飞行大队 · 机械师 · 周某某"，背面还刻了两个字："等我"。</em>
+      </p>
+      <button class="collect-btn" onclick="collectItem('airport_tag','飞行员身份牌'); playSound('collect');">
+        收入档案柜 📂
+      </button>
+    </div>
+
+    <div class="fact-box unlock-card" style="border-left: 4px solid var(--seal);">
+      <h4>🔓 新地点解锁</h4>
+      <p>
+        小沈说，今天有一批后方送来的棉衣和茶叶，要卸在<strong>磁器口古镇</strong>——
+        轰炸最凶的那几年，那里是全城人的退路。"去看看吧，那里有重庆的另一种样子。"
+      </p>
+      <button class="collect-btn" style="background: var(--seal);" onclick="goToNext('airport','ciqikou.html')">
+        前往磁器口古镇 →
+      </button>
+    </div>
+
+    <div class="scene-nav">
+      <a href="school.html" class="btn-vintage secondary">← 上一幕：沙坪坝学校</a>
+      <a href="../../index.html" class="btn-vintage secondary">返回城厢图</a>
+    </div>
+
+  </div>
+
+  <script src="../../assets/js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      mountSceneFX(document.querySelector('.scene-header'), 'airport');
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <script>
+  /* 雾都1937 外壳引导（wudu1937-shell-bootstrap）：顶层打开时进入外壳，保证背景音乐跨页面持续播放 */
+  (function () {
+    var p = decodeURIComponent(window.location.pathname).replace(/\\/g, '/');
+    var m = p.match(/(pages\/scenes\/[A-Za-z0-9_-]+\.html|pages\/[A-Za-z0-9_-]+\.html|index\.html)/i);
+    var rel = m ? m[1] : 'index.html';
+    if (window.top === window.self) {
+      var prefix = rel.indexOf('pages/scenes/') === 0 ? '../../'
+        : rel.indexOf('pages/') === 0 ? '../' : '';
+      window.location.replace(prefix + 'app.html#' + rel);
+    } else {
+      var notify = function () {
+        try { window.top.postMessage({ __wudu1937: 'nav', rel: rel }, '*'); } catch (e) {}
+      };
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', notify);
+      } else {
+        notify();
+      }
+    }
+  })();
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>磁器口古镇 · 雾都1937</title>
+  <link rel="stylesheet" href="../../assets/css/style.css">
+  <style>
+    .scene-header {
+      height: 62vh;
+      --scene-bg:
+        linear-gradient(180deg, rgba(40,30,20,0.3) 0%, rgba(30,24,16,0.6) 100%),
+        url('../../assets/images/ciqikou-bg.jpg') center/cover no-repeat;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .scene-title {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 72px;
+      color: var(--paper);
+      z-index: 2;
+      text-shadow: 0 0 30px rgba(0,0,0,0.6);
+      animation: titleIn 1.6s ease both;
+    }
+    @keyframes titleIn { from { opacity: 0; letter-spacing: 1.2em; } to { opacity: 1; letter-spacing: 0.1em; } }
+    .scene-date {
+      color: rgba(242, 232, 207, 0.75);
+      font-size: 16px;
+      letter-spacing: 0.4em;
+      margin-top: 16px;
+      z-index: 2;
+    }
+
+    .fact-box {
+      background: var(--paper-dark);
+      padding: 32px;
+      margin: 32px 0;
+      border: 1px solid rgba(43,36,24,0.15);
+    }
+    .fact-box h4 {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 22px;
+      color: #6a4a2a;
+      margin-bottom: 16px;
+    }
+    .fact-box p { line-height: 2; font-size: 15px; color: var(--ink-light); }
+
+    .teahouse-wall {
+      background: #2a2520;
+      color: var(--paper);
+      padding: 40px 32px;
+      margin: 40px 0;
+      text-align: center;
+    }
+    .teahouse-wall .big {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 30px;
+      color: #e8c896;
+      line-height: 2;
+    }
+
+    .collect-btn {
+      display: inline-block;
+      margin-top: 16px;
+      padding: 10px 24px;
+      background: #5a4a3a;
+      color: var(--paper);
+      border: none;
+      font-family: 'Noto Serif SC', serif;
+      cursor: pointer;
+      font-size: 14px;
+      letter-spacing: 0.1em;
+    }
+    .collect-btn:hover { opacity: 0.9; }
+
+    .scene-nav {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      margin-top: 60px;
+      padding-top: 32px;
+      border-top: 1px solid rgba(43,36,24,0.15);
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="top-nav">
+    <a href="../../index.html" class="logo">雾都1937</a>
+    <div class="nav-links">
+      <a href="../../index.html">城厢图</a>
+      <a href="../archive.html">档案柜</a>
+      <a href="../characters.html">人物谱</a>
+      <a href="../timeline.html">时间轴</a>
+    </div>
+  </nav>
+
+  <header class="scene-header">
+    <h1 class="scene-title">磁器口古镇</h1>
+    <p class="scene-date">民 国 三 十 三 年 · 冬</p>
+  </header>
+
+  <div class="page-container">
+
+    <div style="text-align: center; margin: 40px 0 8px;">
+      <button class="btn-vintage scene-enter-btn" onclick="startScene('ciqikou')">
+        走进茶馆 ▶
+      </button>
+    </div>
+    <button class="ambient-btn" type="button" onclick="toggleAmbient(this, 'crowd')">
+      🔈 开启环境音（茶馆人声）
+    </button>
+
+    <div class="fact-box">
+      <h4>📜 历史现场：大后方的烟火气</h4>
+      <p>
+        磁器口位于嘉陵江畔，距重庆主城约20公里。
+        在大轰炸最惨烈的那些年，这里成了不少城里人的"避难所"。<br><br>
+        古镇的茶馆、饭馆、客栈，接纳了从城里逃出来的平民。
+        有人在这里一住就是好几年。古镇的青石板路上，
+        走过了工厂工人、流亡学生、报馆编辑、空军家属——
+        他们都是这个战时首都的一部分。<br><br>
+        <strong>轰炸炸不垮烟火气，这就是重庆。</strong>
+      </p>
+    </div>
+
+    <div class="teahouse-wall">
+      <p class="big">
+        码头工人、学生、报馆先生、飞行员的太太，<br>
+        到了这儿，都是一碗茶。
+      </p>
+      <p style="margin-top:16px; color:rgba(242,232,207,0.6); font-size:14px; letter-spacing:0.2em;">
+        —— 陈记茶馆 · 墙上的字
+      </p>
+    </div>
+
+    <div class="fact-box">
+      <h4>📷 历史影像</h4>
+      <div class="photo-gallery">
+        <div class="photo-item">
+          <img src="../../assets/images/ciqikou-bg.jpg" alt="磁器口古镇">
+          <div class="photo-caption">
+            磁器口：青石板路沿江而建，吊脚楼层叠而上，雾起时，全城的疲惫都停在这里
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fact-box">
+      <h4>📁 现场拾得</h4>
+      <p>
+        在茶馆的旧账本里，你发现一页被撕掉一半的记录：<br><br>
+        <em style="color: #5a4a3a; font-size: 18px;">
+          "民国三十年六月五日，收难民费 不计。借铺盖 三床。——陈记"
+        </em>
+      </p>
+      <button class="collect-btn" onclick="collectItem('ciqikou_ledger','茶馆旧账本残页'); playSound('collect');">
+        收入档案柜 📂
+      </button>
+    </div>
+
+    <div class="fact-box unlock-card" style="border-left: 4px solid var(--seal);">
+      <h4>🕯️ 终章将至</h4>
+      <p>
+        你走过了码头、隧道、报馆、学校、机场，又坐进了这间茶馆。<br>
+        陈老板给你添了一碗茶，望向江面：
+        "听说了吗？美国人在太平洋上反攻了。我估摸着——快了，天快亮了。"
+      </p>
+      <button class="collect-btn" style="background: var(--seal);" onclick="goToNext('ciqikou','../ending.html')">
+        等到天亮 · 前往终章 →
+      </button>
+    </div>
+
+    <div class="scene-nav">
+      <a href="airport.html" class="btn-vintage secondary">← 上一幕：广阳坝机场</a>
+      <a href="../../index.html" class="btn-vintage secondary">返回城厢图</a>
+    </div>
+
+  </div>
+
+  <script src="../../assets/js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      mountSceneFX(document.querySelector('.scene-header'), 'ciqikou');
+    });
+  </script>
+</body>
+</html>
