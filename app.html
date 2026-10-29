@@ -47,7 +47,7 @@
     #bgm-toggle:hover { background: #8b2e2e; transform: translateY(-2px); }
     #bgm-toggle.playing { border-color: rgba(242, 232, 207, 0.6); }
 
-    /* ========== 启动门：浏览器拦截自动播放时，点击一次即可开启音乐并进入 ========== */
+    /* ========== 启动门：进入封面（hero 大图），点击进入后开启音乐并开始探索 ========== */
     #gate {
       position: fixed;
       inset: 0;
@@ -289,7 +289,7 @@
   <!-- 音乐开关 -->
   <button id="bgm-toggle" type="button" title="播放 / 暂停背景音乐">🎵 音乐</button>
 
-  <!-- 启动门：仅在浏览器拦截自动播放时出现 -->
+  <!-- 启动门：进入封面，点击进入后开启音乐并开始探索 -->
   <div id="gate" hidden>
     <div class="fog-layer"></div>
     <h1 class="gate-title">雾都1937</h1>
@@ -427,7 +427,7 @@
     }
 
     function showGate() {
-      if (userEntered || userOff) return;
+      if (userEntered) return;
       gateToken++;
       gate.hidden = false;
       requestAnimationFrame(function () { gate.classList.remove('hidden'); });
@@ -441,15 +441,14 @@
       }, 1300);
     }
 
-    // 进入页面即尝试播放；浏览器允许自动播放时全程无感
+    // 每次进入站点都展示启动封面（hero 大图）；浏览器允许自动播放时音乐直接响起，封面仍需点击进入
     if (!userOff) {
       var p = bgm.play();
       if (p && typeof p.then === 'function') {
-        p.then(function () {
-          if (!bgm.paused) hideGate();
-        }).catch(function () { showGate(); });
+        p.then(function () {}).catch(function () {});
       }
     }
+    showGate();
 
     // 自动播放后若被浏览器策略暂停（且用户尚未点击进入），重新提示点击
     bgm.addEventListener('pause', function () {
@@ -458,7 +457,7 @@
     });
     bgm.addEventListener('play', syncToggle);
 
-    // 自动播放被拦截时，点击启动门（顶层用户手势）后播放
+    // 点击启动门（顶层用户手势）：开启音乐并进入
     gate.addEventListener('click', function () {
       userEntered = true;
       if (!userOff) {
