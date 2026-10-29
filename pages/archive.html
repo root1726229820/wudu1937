@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <script>
+  /* 雾都1937 外壳引导（wudu1937-shell-bootstrap）：顶层打开时进入外壳，保证背景音乐跨页面持续播放 */
+  (function () {
+    var p = decodeURIComponent(window.location.pathname).replace(/\\/g, '/');
+    var m = p.match(/(pages\/scenes\/[A-Za-z0-9_-]+\.html|pages\/[A-Za-z0-9_-]+\.html|index\.html)/i);
+    var rel = m ? m[1] : 'index.html';
+    if (window.top === window.self) {
+      var prefix = rel.indexOf('pages/scenes/') === 0 ? '../../'
+        : rel.indexOf('pages/') === 0 ? '../' : '';
+      window.location.replace(prefix + 'app.html#' + rel);
+    } else {
+      var notify = function () {
+        try { window.top.postMessage({ __wudu1937: 'nav', rel: rel }, '*'); } catch (e) {}
+      };
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', notify);
+      } else {
+        notify();
+      }
+    }
+  })();
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>我的档案柜 · 雾都1937</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <style>
+    .archive-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 24px;
+      margin-top: 32px;
+    }
+    .archive-item {
+      background: var(--paper-dark);
+      border: 1px solid rgba(43,36,24,0.2);
+      padding: 24px;
+      position: relative;
+      transition: all 0.3s;
+    }
+    .archive-item:hover {
+      transform: translateY(-4px);
+      box-shadow: 4px 8px 16px var(--shadow);
+    }
+    .archive-item .item-icon {
+      font-size: 40px;
+      margin-bottom: 12px;
+    }
+    .archive-item .item-name {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 20px;
+      margin-bottom: 8px;
+    }
+    .archive-item .item-time {
+      font-size: 12px;
+      color: var(--ink-light);
+    }
+    .archive-item .seal-stamp {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 40px;
+      height: 40px;
+      border: 2px solid var(--seal);
+      border-radius: 50%;
+      color: var(--seal);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      transform: rotate(15deg);
+      opacity: 0.6;
+    }
+    .empty-state {
+      text-align: center;
+      padding: 80px 20px;
+      color: var(--ink-light);
+    }
+    .empty-state .empty-icon { font-size: 64px; margin-bottom: 16px; }
+    .progress-bar {
+      background: rgba(43,36,24,0.1);
+      height: 8px;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 16px;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--seal);
+      transition: width 0.5s;
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="top-nav">
+    <a href="../index.html" class="logo">雾都1937</a>
+    <div class="nav-links">
+      <a href="../index.html">城厢图</a>
+      <a href="archive.html" class="active">档案柜</a>
+      <a href="characters.html">人物谱</a>
+      <a href="timeline.html">时间轴</a>
+    </div>
+  </nav>
+
+  <div class="page-container">
+    <h2 class="section-title">我的档案柜</h2>
+    <p class="section-subtitle">你 在 雾 都 拾 得 的 每 一 片 记 忆</p>
+
+    <div class="vintage-card" style="margin-bottom: 32px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+        <div>
+          <strong style="font-size: 18px;">收集进度</strong>
+          <div style="font-size: 13px; color: var(--ink-light); margin-top: 4px;">
+            每一件档案，都是一段被记住的历史
+          </div>
+        </div>
+        <div style="text-align: right;">
+          <span style="font-size: 28px; font-family: 'Ma Shan Zheng', cursive;" id="count-display">0</span>
+          <span style="color: var(--ink-light);"> 件</span>
+        </div>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progress-fill" style="width: 0%;"></div>
+      </div>
+    </div>
+
+    <div class="archive-grid" id="archive-grid">
+      <!-- 动态填充 -->
+    </div>
+
+    <div class="vintage-card" id="complete-card" style="display:none; margin-top:32px; text-align:center; border-left:4px solid var(--seal);">
+      <div style="font-size:40px; margin-bottom:12px;">🕯️</div>
+      <h3 style="font-family:'Ma Shan Zheng',cursive; font-size:26px; margin-bottom:10px;">七件档案，七段记忆</h3>
+      <p style="color:var(--ink-light); font-size:14px; line-height:2;">
+        你已集齐这趟旅程的全部档案。<br>
+        它们属于一个工人、一个学生、一个报人、一个军属，也属于码头、茶馆、报馆里的每一个普通人——<br>
+        属于每一个在轰炸中没有低头的大后方。
+      </p>
+      <a href="ending.html" class="btn-vintage" style="margin-top:20px;">前往终章 · 天亮了</a>
+    </div>
+
+    <div class="empty-state" id="empty-state" style="display:none;">
+      <div class="empty-icon">📭</div>
+      <p style="font-size: 18px; margin-bottom: 8px;">档案柜还是空的</p>
+      <p style="font-size: 14px;">去地图上探索吧，在每一个场景里拾得属于你的历史碎片</p>
+      <a href="../index.html" class="btn-vintage" style="margin-top: 24px;">前往地图</a>
+    </div>
+  </div>
+
+  <script src="../assets/js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      loadProgress();
+      const grid = document.getElementById('archive-grid');
+      const empty = document.getElementById('empty-state');
+      const completeCard = document.getElementById('complete-card');
+      const count = GameState.collected.length;
+
+      document.getElementById('count-display').textContent = count;
+      document.getElementById('progress-fill').style.width = Math.min(count / 7 * 100, 100) + '%';
+
+      if (count === 0) {
+        empty.style.display = 'block';
+        return;
+      }
+
+      const iconMap = {
+        'choice': '🎭', 'dock': '📦', 'tunnel': '📝', 'newspaper': '✉️',
+        'school': '📖', 'airport': '🎖️', 'ciqikou': '📒', 'default': '📁'
+      };
+
+      GameState.collected.forEach(item => {
+        let icon = '📁';
+        for (const key in iconMap) {
+          if (item.id.includes(key)) { icon = iconMap[key]; break; }
+        }
+        const div = document.createElement('div');
+        div.className = 'archive-item';
+        div.innerHTML = `
+          <div class="seal-stamp">已藏</div>
+          <div class="item-icon">${icon}</div>
+          <div class="item-name">${item.name}</div>
+          <div class="item-time">拾于：${item.time || '未知'}</div>
+        `;
+        grid.appendChild(div);
+      });
+
+      if (count >= 7) {
+        completeCard.style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <script>
+  /* 雾都1937 外壳引导（wudu1937-shell-bootstrap）：顶层打开时进入外壳，保证背景音乐跨页面持续播放 */
+  (function () {
+    var p = decodeURIComponent(window.location.pathname).replace(/\\/g, '/');
+    var m = p.match(/(pages\/scenes\/[A-Za-z0-9_-]+\.html|pages\/[A-Za-z0-9_-]+\.html|index\.html)/i);
+    var rel = m ? m[1] : 'index.html';
+    if (window.top === window.self) {
+      var prefix = rel.indexOf('pages/scenes/') === 0 ? '../../'
+        : rel.indexOf('pages/') === 0 ? '../' : '';
+      window.location.replace(prefix + 'app.html#' + rel);
+    } else {
+      var notify = function () {
+        try { window.top.postMessage({ __wudu1937: 'nav', rel: rel }, '*'); } catch (e) {}
+      };
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', notify);
+      } else {
+        notify();
+      }
+    }
+  })();
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>战时人物谱 · 雾都1937</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <style>
+    /* 群像立意 */
+    .intent-card {
+      max-width: 900px;
+      margin: 0 auto 48px;
+      background: #2a2520;
+      color: var(--paper);
+      padding: 32px 36px;
+      line-height: 2.1;
+      font-size: 14.5px;
+    }
+    .intent-card h3 {
+      font-family: 'Ma Shan Zheng', cursive;
+      color: #e8c896;
+      font-size: 24px;
+      margin-bottom: 12px;
+    }
+    .intent-card .pillar {
+      display: flex; gap: 10px; align-items: baseline;
+      margin-top: 8px;
+    }
+    .intent-card .pillar b { color: #e8c896; white-space: nowrap; font-weight: 600; }
+    .intent-card .closing {
+      margin-top: 16px; padding-top: 14px;
+      border-top: 1px dashed rgba(242,232,207,0.25);
+      color: rgba(242,232,207,0.85);
+    }
+
+    /* 各幕亲历者对应表 */
+    .cast-table-wrap {
+      max-width: 900px;
+      margin: 0 auto 56px;
+      background: var(--paper-dark);
+      border: 1px solid rgba(43,36,24,0.2);
+      box-shadow: 6px 6px 0 var(--shadow);
+      padding: 8px 20px 20px;
+    }
+    table.cast-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    table.cast-table th {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 17px;
+      color: var(--seal);
+      letter-spacing: 0.1em;
+      padding: 12px 8px;
+      border-bottom: 2px solid rgba(43,36,24,0.25);
+    }
+    table.cast-table td {
+      padding: 12px 8px;
+      border-bottom: 1px dashed rgba(43,36,24,0.15);
+      color: var(--ink-light);
+      text-align: center;
+    }
+    table.cast-table td.act { font-weight: 600; color: var(--ink); white-space: nowrap; }
+    table.cast-table td.who { color: var(--seal); font-weight: 600; }
+    table.cast-table tr.core td { background: rgba(139,46,46,0.07); }
+    table.cast-table tr:last-child td { border-bottom: none; }
+
+    .char-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 32px;
+      margin-top: 32px;
+    }
+    .char-card {
+      background: var(--paper-dark);
+      border: 1px solid rgba(43,36,24,0.2);
+      padding: 32px 24px;
+      text-align: center;
+      position: relative;
+      transition: all 0.3s;
+    }
+    .char-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 6px 12px 24px var(--shadow);
+    }
+    .char-card .avatar {
+      width: 140px;
+      height: 180px;
+      margin: 0 auto 20px;
+      border-radius: 4px;
+      overflow: hidden;
+      border: 4px solid var(--paper);
+      box-shadow: 0 4px 16px var(--shadow);
+    }
+    .char-card .avatar img {
+      width: 100%; height: 100%; object-fit: cover;
+      filter: sepia(0.3) contrast(0.95);
+    }
+    .char-card .name {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 28px;
+      margin-bottom: 4px;
+    }
+    .char-card .role {
+      color: var(--seal);
+      font-size: 13px;
+      letter-spacing: 0.2em;
+      margin-bottom: 10px;
+    }
+    .char-card .tag-row { margin-bottom: 14px; }
+    .char-card .group-tag,
+    .char-card .acts {
+      display: inline-block;
+      font-size: 12px;
+      padding: 3px 12px;
+      margin: 2px 4px;
+      letter-spacing: 0.08em;
+    }
+    .char-card .group-tag {
+      color: var(--paper);
+      background: var(--moss);
+    }
+    .char-card .acts {
+      color: var(--moss);
+      border: 1px solid rgba(45,74,62,0.4);
+    }
+    .char-card .contrib {
+      font-size: 12.5px;
+      color: var(--moss);
+      line-height: 1.8;
+      text-align: left;
+      margin-bottom: 14px;
+      padding: 10px 12px;
+      background: rgba(45,74,62,0.08);
+      border-left: 3px solid var(--moss);
+    }
+    .char-card .bio {
+      font-size: 13px;
+      color: var(--ink-light);
+      line-height: 1.9;
+      text-align: left;
+    }
+    .char-card .quote {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px dashed rgba(43,36,24,0.2);
+      font-style: italic;
+      font-size: 13px;
+      color: var(--ink);
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="top-nav">
+    <a href="../index.html" class="logo">雾都1937</a>
+    <div class="nav-links">
+      <a href="../index.html">城厢图</a>
+      <a href="archive.html">档案柜</a>
+      <a href="characters.html" class="active">人物谱</a>
+      <a href="timeline.html">时间轴</a>
+    </div>
+  </nav>
+
+  <div class="page-container">
+    <h2 class="section-title">战时人物谱</h2>
+    <p class="section-subtitle">大 后 方 的 四 种 身 影</p>
+
+    <!-- 群像立意：为什么是这四个人 -->
+    <div class="intent-card">
+      <h3>为什么是他们四个？</h3>
+      <p>
+        战争不只有前线。国民政府移驻重庆后，沿海的工厂、学校、报馆、民众沿江西迁，
+        一座山城撑起了整个中国的后方。这场战争能撑下来，靠的不只是军人——
+        而是<b>工人、学生、报人、军属</b>这些普通人，在各自的位置上没有松手。
+      </p>
+      <div class="pillar"><b>工人 · 林阿婆</b><span>：工厂迁到哪里，生产就跟到哪里，为前线保住物资与布匹。</span></div>
+      <div class="pillar"><b>学生 · 苏同学</b><span>：敌人炸得了校舍，炸不了读书的火种，青年在炮火里救亡、求学。</span></div>
+      <div class="pillar"><b>报人 · 陈先生</b><span>：轰炸声里照常出报，把真相和民心一笔一笔印出来。</span></div>
+      <div class="pillar"><b>军属 · 周太太</b><span>：她守望的天空就是前线，机场边的军人、民工与眷属共筑空中防线。</span></div>
+      <p class="closing">
+        另有市井商户（磁器口的茶馆掌柜、码头工人、防护团、印刷工、机械兵等）作为场景中的配角出现。
+        他们没有一个人是“英雄”，但合在一起，就是一座城的脊梁。
+      </p>
+    </div>
+
+    <!-- 各幕固定亲历者对应表 -->
+    <div class="cast-table-wrap">
+      <table class="cast-table">
+        <thead>
+          <tr>
+            <th>幕</th><th>地点</th><th>时间</th><th>这一幕的亲历者</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="act">第一幕</td><td>朝天门码头</td><td>1938 · 春</td><td class="who">林阿婆 · 工人</td>
+          </tr>
+          <tr class="core">
+            <td class="act">第二幕</td><td>较场口大隧道</td><td>1941 · 6 · 5</td><td class="who">林阿婆 · 工人</td>
+          </tr>
+          <tr>
+            <td class="act">第三幕</td><td>新华日报社</td><td>1941 · 6 · 6</td><td class="who">陈先生 · 报人</td>
+          </tr>
+          <tr>
+            <td class="act">第四幕</td><td>沙坪坝学校</td><td>1941 · 秋</td><td class="who">苏同学 · 学生</td>
+          </tr>
+          <tr>
+            <td class="act">第五幕</td><td>广阳坝机场</td><td>1943 · 秋</td><td class="who">周太太 · 军属</td>
+          </tr>
+          <tr>
+            <td class="act">第六幕</td><td>磁器口古镇</td><td>1944 · 冬</td><td class="who">林阿婆 · 工人</td>
+          </tr>
+          <tr>
+            <td class="act">终章</td><td>胜利之夜</td><td>1945 · 8 · 15</td><td class="who">群像 · 天亮了</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="section-title" style="font-size:34px; margin-bottom: 8px;">四位当事人</h3>
+    <p class="section-subtitle">跟 着 他 们 的 脚 步 走 进 那 一 夜</p>
+
+    <div class="char-grid">
+      <div class="char-card">
+        <div class="avatar"><img src="../assets/images/char-worker.jpg" alt="林阿婆"></div>
+        <div class="name">林阿婆</div>
+        <div class="role">纺织女工 · 南岸</div>
+        <div class="tag-row">
+          <span class="group-tag">工人</span>
+          <span class="acts">第一 · 二 · 六幕</span>
+        </div>
+        <div class="contrib">贡献：随厂内迁、坚持生产，为前线纺纱织布；她代表的是“保住机器、保住后方”的产业工人。</div>
+        <div class="bio">
+          江苏无锡人，原在申新纱厂做工，1938年随厂内迁重庆。
+          她在码头押运过机器，在较场口隧道躲过那一夜，也在磁器口为幸存者端过一碗茶。
+          她活下来了，工友没有全活下来。
+        </div>
+        <div class="quote">“纱断了可以再接，人没了就什么都没了。”</div>
+      </div>
+
+      <div class="char-card">
+        <div class="avatar"><img src="../assets/images/char-student.jpg" alt="苏同学"></div>
+        <div class="name">苏同学</div>
+        <div class="role">流亡学生 · 沙坪坝</div>
+        <div class="tag-row">
+          <span class="group-tag">学生</span>
+          <span class="acts">第四幕</span>
+        </div>
+        <div class="contrib">贡献：炮火中继续读书、办救亡宣传、为伤兵义演，为民族保存知识与未来的火种。</div>
+        <div class="bio">
+          武汉人，1938年随学校西迁，就读于沙坪坝的临时中学。
+          白天上课，晚上贴标语、演街头剧、为前线募捐。
+          他们相信，敌人炸得了校舍，炸不了课本里的公式。
+        </div>
+        <div class="quote">“读书不是为了自己，是为了这个国家还有未来。”</div>
+      </div>
+
+      <div class="char-card">
+        <div class="avatar"><img src="../assets/images/char-editor.jpg" alt="陈先生"></div>
+        <div class="name">陈先生</div>
+        <div class="role">报馆校对 · 化龙桥</div>
+        <div class="tag-row">
+          <span class="group-tag">报人</span>
+          <span class="acts">第三幕</span>
+        </div>
+        <div class="contrib">贡献：轰炸最烈时坚持出报，在防空洞里传递号外与消息，记录真相、凝聚民心——笔也是枪。</div>
+        <div class="bio">
+          浙江人，在《新华日报》做校对。惨案第二天，他和工友连夜排号外，
+          一个标点都不许错。他说，为他们说话的字，更不能错。
+        </div>
+        <div class="quote">“字不能歪，哪怕手在抖。”</div>
+      </div>
+
+      <div class="char-card">
+        <div class="avatar"><img src="../assets/images/char-pilot.jpg" alt="周太太"></div>
+        <div class="name">周太太</div>
+        <div class="role">空军家属 · 广阳坝</div>
+        <div class="tag-row">
+          <span class="group-tag">军属</span>
+          <span class="acts">第五幕</span>
+        </div>
+        <div class="contrib">贡献：随军驻扎、抢建跑道、检修战机，目送飞行员升空；她守望的那片天空，就是重庆的空中防线。</div>
+        <div class="bio">
+          成都人，丈夫是空军地勤机械师，她随部队驻扎在广阳坝机场附近。
+          每天到坝子边数飞机，每一架都不一样。
+          她等的那架编号，后来没有再回来。
+        </div>
+        <div class="quote">“天空很大，可我等的那架，不会落下来了。”</div>
+      </div>
+    </div>
+
+    <div class="vintage-card" style="margin-top: 48px; text-align: center;">
+      <p style="font-size: 15px; line-height: 2; color: var(--ink-light);">
+        他们不是历史书里的名字。<br>
+        他们是工人、学生、报人、军属，是父亲、母亲、丈夫、妻子、儿子、女儿——<br>
+        是和你我一样的普通人，只是生在了那个年代。
+      </p>
+    </div>
+  </div>
+
+  <script src="../assets/js/main.js"></script>
+</body>
+</html>
