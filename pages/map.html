@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <script>
+  /* 地图已并入首页（index.html）：此处统一跳转到首页城厢图 */
+  (function () {
+    if (window.top === window.self) {
+      // 顶层直接打开：进入外壳并加载首页
+      window.location.replace('../app.html#index.html');
+    } else {
+      // 已在外壳 iframe 内：iframe 直接回到首页
+      window.location.replace('../index.html');
+    }
+  })();
+  </script>
+  <title>跳转中 · 雾都1937</title>
+</head>
+<body></body>
+</html>
