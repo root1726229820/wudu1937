@@ -1,0 +1,704 @@
+/* ========== 雾都1937 全局样式 ========== */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;900&family=Ma+Shan+Zheng&display=swap');
+
+:root {
+  --paper: #f2e8cf;
+  --paper-dark: #e8dcc0;
+  --ink: #2b2418;
+  --ink-light: #5a4e3a;
+  --seal: #8b2e2e;
+  --moss: #2d4a3e;
+  --fog: rgba(200, 200, 190, 0.85);
+  --shadow: rgba(43, 36, 24, 0.2);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html {
+  height: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  min-height: 100%;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'Noto Serif SC', 'SimSun', serif;
+  overflow-x: hidden;
+}
+
+/* 纸张纹理背景 */
+body {
+  background-image:
+    radial-gradient(ellipse at 20% 30%, rgba(139, 46, 46, 0.04) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 70%, rgba(45, 74, 62, 0.04) 0%, transparent 50%),
+    repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(43,36,24,0.008) 2px, rgba(43,36,24,0.008) 4px);
+}
+
+/* 毛笔书法标题 */
+.calligraphy {
+  font-family: 'Ma Shan Zheng', 'Noto Serif SC', cursive;
+  font-weight: 900;
+  letter-spacing: 0.15em;
+}
+
+/* 顶部导航 */
+.top-nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 40px;
+  background: linear-gradient(to bottom, rgba(242, 232, 207, 0.95), rgba(242, 232, 207, 0.7));
+  border-bottom: 1px solid rgba(43, 36, 24, 0.15);
+  backdrop-filter: blur(4px);
+}
+
+.top-nav .logo {
+  font-family: 'Ma Shan Zheng', cursive;
+  font-size: 24px;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.top-nav .nav-links a {
+  margin-left: 24px;
+  color: var(--ink-light);
+  text-decoration: none;
+  font-size: 14px;
+  transition: color 0.3s;
+}
+.top-nav .nav-links a:hover { color: var(--seal); }
+.top-nav .nav-links a.active { color: var(--seal); border-bottom: 1px solid var(--seal); }
+
+/* 印章 */
+.seal {
+  display: inline-block;
+  padding: 6px 10px;
+  background: var(--seal);
+  color: #f5e6c8;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  transform: rotate(-3deg);
+  box-shadow: 0 2px 8px var(--shadow);
+  border-radius: 2px;
+}
+
+/* 打字机效果 */
+.typewriter {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  border-right: 2px solid var(--ink);
+  animation: typing 3s steps(40, end), blink 0.75s step-end infinite;
+}
+@keyframes typing { from { width: 0; } to { width: 100%; } }
+@keyframes blink { 50% { border-color: transparent; } }
+
+/* 雾气转场遮罩 */
+.fog-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--fog);
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 1.5s ease;
+}
+.fog-overlay.active { opacity: 1; pointer-events: all; }
+
+/* 通用按钮 */
+.btn-vintage {
+  display: inline-block;
+  padding: 12px 36px;
+  background: var(--ink);
+  color: var(--paper);
+  border: none;
+  font-family: 'Noto Serif SC', serif;
+  font-size: 16px;
+  letter-spacing: 0.2em;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s;
+  text-decoration: none;
+}
+.btn-vintage:hover {
+  background: var(--seal);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px var(--shadow);
+}
+.btn-vintage.secondary {
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--ink);
+}
+.btn-vintage.secondary:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+/* 章节标题 */
+.section-title {
+  font-family: 'Ma Shan Zheng', cursive;
+  font-size: 48px;
+  text-align: center;
+  margin-bottom: 16px;
+  color: var(--ink);
+}
+.section-subtitle {
+  text-align: center;
+  color: var(--ink-light);
+  font-size: 15px;
+  letter-spacing: 0.3em;
+  margin-bottom: 48px;
+}
+
+/* 卡片 */
+.vintage-card {
+  background: var(--paper-dark);
+  border: 1px solid rgba(43, 36, 24, 0.2);
+  padding: 24px;
+  position: relative;
+  box-shadow: 4px 4px 0 var(--shadow);
+}
+.vintage-card::before {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border: 1px solid rgba(43, 36, 24, 0.1);
+  pointer-events: none;
+}
+
+/* 老照片效果 */
+.old-photo {
+  filter: sepia(0.4) contrast(0.95) brightness(0.95);
+  border: 8px solid #fff;
+  box-shadow: 0 4px 16px var(--shadow);
+}
+
+/* 页面容器 */
+.page-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 100px 40px 60px;
+  min-height: 100vh;
+}
+
+/* 响应式 */
+@media (max-width: 768px) {
+  .page-container { padding: 90px 20px 40px; }
+  .section-title { font-size: 32px; }
+  .top-nav { padding: 12px 20px; }
+  .top-nav .nav-links a { margin-left: 12px; font-size: 12px; }
+}
+
+/* 爆炸动画 */
+@keyframes explode {
+  0% { transform: scale(0.3); opacity: 1; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+
+/* 历史照片相册 */
+.photo-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  margin: 32px 0;
+  align-items: start;
+}
+.photo-item {
+  position: relative;
+  align-self: start;
+  background: #fff;
+  overflow: hidden;
+  border: 8px solid #fff;
+  box-shadow: 0 4px 16px var(--shadow);
+  transition: transform 0.4s, box-shadow 0.4s;
+  cursor: pointer;
+}
+.photo-item:hover {
+  transform: translateY(-4px) rotate(-1deg);
+  box-shadow: 0 8px 32px var(--shadow);
+}
+.photo-figure {
+  position: relative;
+  margin: 0;
+  overflow: hidden;
+}
+.photo-figure + .photo-figure { margin-top: 10px; }
+.photo-item > img,
+.photo-figure img {
+  width: 100%;
+  display: block;
+  filter: sepia(0.4) contrast(0.95);
+}
+.photo-item > .photo-caption,
+.photo-figure .photo-caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.82), transparent);
+  color: #fff;
+  padding: 26px 16px 12px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* 浮动雾气动画 */
+.floating-fog {
+  position: fixed;
+  pointer-events: none;
+  background: radial-gradient(ellipse, rgba(200,200,190,0.15), transparent);
+  border-radius: 50%;
+  z-index: 1;
+  animation: fogFloat 30s ease-in-out infinite alternate;
+}
+@keyframes fogFloat {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(100px, -50px); }
+}
+
+/* 人物对话立绘动画 */
+.char-portrait {
+  transition: transform 0.3s;
+}
+.char-portrait:hover {
+  transform: scale(1.05);
+}
+
+/* 打字机光标闪烁 */
+@keyframes blink-caret {
+  0%, 100% { border-color: transparent; }
+  50% { border-color: var(--ink); }
+}
+
+/* ========== 全站老电影颗粒（呼吸感、做旧质感） ========== */
+body::after {
+  content: '';
+  position: fixed;
+  inset: -50%;
+  width: 200%;
+  height: 200%;
+  pointer-events: none;
+  z-index: 9997;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: grainShift 0.6s steps(3) infinite;
+}
+@keyframes grainShift {
+  0% { transform: translate(0, 0); }
+  33% { transform: translate(-1.5%, 1%); }
+  66% { transform: translate(1%, -1.5%); }
+  100% { transform: translate(0, 0); }
+}
+
+/* ========== 浮动导航按钮（右下角） ========== */
+.float-nav {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.float-nav button {
+  padding: 10px 20px;
+  background: var(--ink);
+  color: var(--paper);
+  border: none;
+  font-family: 'Noto Serif SC', 'SimSun', serif;
+  font-size: 13px;
+  cursor: pointer;
+  letter-spacing: 0.1em;
+  box-shadow: 2px 2px 8px var(--shadow);
+  transition: background 0.3s;
+}
+.float-nav button:hover { background: var(--seal); }
+.float-nav button:last-child {
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--ink);
+}
+.float-nav button:last-child:hover { background: var(--ink); color: var(--paper); }
+
+/* ========== 场景头图：Ken Burns 缓推 + 动态层 ========== */
+.scene-header {
+  user-select: none;
+}
+.scene-header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--scene-bg, linear-gradient(180deg, #2b2418, #1a1a1a));
+  background-size: cover;
+  background-position: center;
+  z-index: 0;
+  animation: kenBurns 32s ease-in-out infinite alternate;
+}
+.scene-header > * { z-index: 2; }
+@keyframes kenBurns {
+  0% { transform: scale(1) translate(0, 0); }
+  100% { transform: scale(1.12) translate(-1.5%, 1.5%); }
+}
+
+/* 场景飘动雾气 */
+.scene-fog {
+  position: absolute;
+  pointer-events: none;
+  z-index: 1;
+  border-radius: 50%;
+  filter: blur(14px);
+}
+.scene-fog.f0 {
+  width: 70%; height: 40%; left: -10%; bottom: 0;
+  background: radial-gradient(ellipse, rgba(210,210,200,0.22), transparent 70%);
+  animation: fogDriftA 24s ease-in-out infinite alternate;
+}
+.scene-fog.f1 {
+  width: 60%; height: 35%; right: -10%; top: 20%;
+  background: radial-gradient(ellipse, rgba(210,210,200,0.16), transparent 70%);
+  animation: fogDriftB 30s ease-in-out infinite alternate;
+}
+.scene-fog.f2 {
+  width: 90%; height: 30%; left: 10%; top: 0;
+  background: radial-gradient(ellipse, rgba(210,210,200,0.12), transparent 70%);
+  animation: fogDriftA 36s ease-in-out infinite alternate-reverse;
+}
+@keyframes fogDriftA {
+  from { transform: translateX(-40px); }
+  to { transform: translateX(60px); }
+}
+@keyframes fogDriftB {
+  from { transform: translateX(50px); }
+  to { transform: translateX(-50px); }
+}
+
+/* 场景头图颗粒 */
+.scene-grain {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.12;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* 码头：江面波纹 */
+.fx-wave {
+  position: absolute;
+  left: 0; right: 0;
+  height: 2px;
+  z-index: 1;
+  background: linear-gradient(90deg, transparent, rgba(220,220,210,0.35), transparent);
+  animation: waveMove 6s ease-in-out infinite;
+}
+@keyframes waveMove {
+  0%, 100% { opacity: 0.2; transform: translateX(-30px); }
+  50% { opacity: 0.8; transform: translateX(30px); }
+}
+
+/* 隧道：空袭警报红光 + 灰尘 */
+.scene-header.fx-raid::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 100%, rgba(139,46,46,0.35), transparent 60%);
+  animation: raidPulse 2.6s ease-in-out infinite;
+}
+@keyframes raidPulse {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+.fx-dust {
+  position: absolute;
+  top: -10px;
+  width: 3px; height: 3px;
+  border-radius: 50%;
+  background: rgba(220,200,170,0.5);
+  z-index: 1;
+  animation: dustFall linear infinite;
+}
+@keyframes dustFall {
+  0% { transform: translateY(0); opacity: 0; }
+  15% { opacity: 0.8; }
+  100% { transform: translateY(420px); opacity: 0; }
+}
+
+/* 报馆：飘落纸絮 */
+.fx-paper {
+  position: absolute;
+  top: -20px;
+  width: 8px; height: 10px;
+  background: rgba(242,232,207,0.35);
+  z-index: 1;
+  animation: paperFall linear infinite;
+}
+@keyframes paperFall {
+  0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+  15% { opacity: 0.7; }
+  100% { transform: translateY(460px) rotate(360deg); opacity: 0; }
+}
+
+/* 学校：雨丝 */
+.fx-rain {
+  position: absolute;
+  top: -20%;
+  width: 1px; height: 60px;
+  background: linear-gradient(transparent, rgba(200,210,220,0.5));
+  z-index: 1;
+  animation: rainFall linear infinite;
+}
+@keyframes rainFall {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(520px); }
+}
+
+/* 机场：掠过的飞机 + 流云 */
+.fx-plane {
+  position: absolute;
+  left: -10%;
+  font-size: 34px;
+  color: rgba(20,20,20,0.55);
+  z-index: 1;
+  animation: planeFly linear infinite;
+}
+@keyframes planeFly {
+  0% { transform: translateX(0) scale(0.7); opacity: 0; }
+  10% { opacity: 0.8; }
+  90% { opacity: 0.8; }
+  100% { transform: translateX(120vw) scale(1.1); opacity: 0; }
+}
+.fx-cloud {
+  position: absolute;
+  left: -30%;
+  width: 45%; height: 60px;
+  background: radial-gradient(ellipse, rgba(220,220,215,0.22), transparent 70%);
+  z-index: 1;
+  animation: cloudDrift linear infinite;
+}
+@keyframes cloudDrift {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(320%); }
+}
+
+/* 磁器口：灯笼光晕 + 炊烟 */
+.fx-lantern {
+  position: absolute;
+  bottom: 12%;
+  width: 14px; height: 18px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,180,90,0.9), rgba(200,100,40,0.2) 70%, transparent);
+  box-shadow: 0 0 24px 8px rgba(255,160,70,0.35);
+  z-index: 1;
+  animation: lanternFlicker 2.4s ease-in-out infinite;
+}
+@keyframes lanternFlicker {
+  0%, 100% { opacity: 0.7; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.12); }
+}
+.fx-smoke {
+  position: absolute;
+  bottom: 20%;
+  width: 50px; height: 50px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(220,220,210,0.2), transparent 70%);
+  z-index: 1;
+  animation: smokeRise 12s ease-out infinite;
+}
+@keyframes smokeRise {
+  0% { transform: translateY(0) scale(0.6); opacity: 0; }
+  30% { opacity: 0.7; }
+  100% { transform: translateY(-260px) scale(1.8); opacity: 0; }
+}
+
+/* 终章：上升的灯火 */
+.fx-spark {
+  position: absolute;
+  bottom: -10px;
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: rgba(255,200,110,0.9);
+  box-shadow: 0 0 10px 4px rgba(255,170,70,0.5);
+  z-index: 1;
+  animation: sparkRise linear infinite;
+}
+@keyframes sparkRise {
+  0% { transform: translateY(0); opacity: 0; }
+  15% { opacity: 1; }
+  100% { transform: translateY(-620px); opacity: 0; }
+}
+
+/* ========== 升级后的视觉小说对话框 ========== */
+#vn-dialogue {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: linear-gradient(to top, rgba(18,14,10,0.97), rgba(20,15,10,0.88));
+  padding: 22px 32px 26px;
+  z-index: 10000;
+  display: flex;
+  gap: 24px;
+  align-items: flex-end;
+  backdrop-filter: blur(6px);
+  border-top: 1px solid rgba(232,200,150,0.25);
+  transform: translateY(105%);
+  transition: transform 0.5s ease;
+  cursor: pointer;
+}
+#vn-dialogue.show { transform: translateY(0); }
+#vn-dialogue .vn-char-img {
+  width: 104px; height: 104px;
+  border-radius: 6px;
+  background: var(--paper-dark);
+  flex-shrink: 0;
+  border: 2px solid rgba(242,232,207,0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 46px;
+  overflow: hidden;
+}
+#vn-dialogue .vn-char-img img {
+  width: 100%; height: 100%; object-fit: cover;
+  filter: sepia(0.25);
+}
+#vn-dialogue.vn-mono {
+  background: linear-gradient(to top, rgba(20,24,22,0.97), rgba(18,22,20,0.88));
+  border-top-color: rgba(150,180,160,0.3);
+}
+#vn-dialogue .vn-char-name {
+  font-family: 'Ma Shan Zheng', cursive;
+  font-size: 23px;
+  color: #e8c896;
+}
+#vn-dialogue.vn-mono .vn-char-name { color: #9ec4ad; }
+#vn-dialogue .vn-tag {
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: rgba(242,232,207,0.5);
+  border: 1px solid rgba(242,232,207,0.3);
+  padding: 2px 8px;
+}
+#vn-dialogue .vn-text {
+  color: #f2e8cf;
+  font-size: 17px;
+  line-height: 2;
+  min-height: 68px;
+  letter-spacing: 0.04em;
+  margin-top: 6px;
+}
+#vn-dialogue .vn-hint {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 6px;
+}
+#vn-dialogue .vn-continue {
+  color: rgba(242,232,207,0.4);
+  font-size: 12px;
+  animation: hintBlink 1.4s ease-in-out infinite;
+}
+@keyframes hintBlink { 50% { opacity: 0.3; } }
+#vn-dialogue .vn-voice-toggle {
+  background: transparent;
+  border: 1px solid rgba(242,232,207,0.3);
+  color: rgba(242,232,207,0.75);
+  font-family: 'Noto Serif SC', 'SimSun', serif;
+  font-size: 12px;
+  padding: 4px 12px;
+  cursor: pointer;
+  letter-spacing: 0.1em;
+}
+#vn-dialogue .vn-voice-toggle:hover {
+  background: rgba(242,232,207,0.15);
+}
+
+/* ========== 场景通用控件 ========== */
+.scene-enter-btn {
+  display: block;
+  margin: 0 auto 12px;
+  padding: 16px 56px;
+  font-size: 17px;
+  letter-spacing: 0.25em;
+}
+.ambient-btn {
+  display: block;
+  margin: 0 auto 32px;
+  padding: 8px 22px;
+  background: transparent;
+  border: 1px solid var(--ink-light);
+  color: var(--ink-light);
+  font-family: 'Noto Serif SC', 'SimSun', serif;
+  font-size: 13px;
+  letter-spacing: 0.15em;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.ambient-btn:hover, .ambient-btn.on {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+
+/* 解锁卡片脉冲 */
+.unlock-card {
+  animation: unlockGlow 2.4s ease-in-out infinite;
+}
+@keyframes unlockGlow {
+  0%, 100% { box-shadow: 0 0 0 rgba(139,46,46,0); }
+  50% { box-shadow: 0 0 28px rgba(139,46,46,0.35); }
+}
+
+/* 场景进入淡入 */
+.page-container {
+  animation: pageFadeIn 1s ease;
+}
+@keyframes pageFadeIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* 终章样式 */
+.ending-quote {
+  text-align: center;
+  font-family: 'Ma Shan Zheng', cursive;
+  font-size: 30px;
+  line-height: 2.2;
+  color: var(--ink);
+}
+.ending-stat {
+  text-align: center;
+  padding: 28px 16px;
+  background: var(--paper-dark);
+  border: 1px solid rgba(43,36,24,0.15);
+}
+.ending-stat .num {
+  font-family: 'Ma Shan Zheng', cursive;
+  font-size: 44px;
+  color: var(--seal);
+}
+.ending-stat .label {
+  font-size: 13px;
+  color: var(--ink-light);
+  letter-spacing: 0.2em;
+  margin-top: 6px;
+}
+.ending-epilogue {
+  background: #2a2520;
+  color: var(--paper);
+  padding: 44px 40px;
+  margin: 40px 0;
+  line-height: 2.4;
+  font-size: 16px;
+  border-left: 4px solid var(--seal);
+}
+.ending-epilogue p { margin-bottom: 18px; }
+.ending-epilogue .sig {
+  text-align: right;
+  color: rgba(242,232,207,0.6);
+  font-style: italic;
+}

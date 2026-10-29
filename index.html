@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="data:,">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>雾都1937 · 重庆：一座城的生存博弈</title>
+  <style>
+    /* ========== 雾都1937 首页：主题横幅 + 城厢图地图 ========== */
+    :root {
+      --paper: #f2e8cf;
+      --paper-dark: #e8dcc0;
+      --ink: #2b2418;
+      --ink-light: #5a4e3a;
+      --seal: #8b2e2e;
+      --moss: #2d4a3e;
+      --shadow: rgba(43, 36, 24, 0.2);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: 'Noto Serif SC', 'SimSun', serif;
+      background-image:
+        radial-gradient(ellipse at 20% 30%, rgba(139, 46, 46, 0.04) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 70%, rgba(45, 74, 62, 0.04) 0%, transparent 50%);
+    }
+
+    .top-nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 40px;
+      background: linear-gradient(to bottom, rgba(242, 232, 207, 0.95), rgba(242, 232, 207, 0.7));
+      border-bottom: 1px solid rgba(43, 36, 24, 0.15);
+      backdrop-filter: blur(4px);
+    }
+    .top-nav .logo {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 24px;
+      color: var(--ink);
+      text-decoration: none;
+    }
+    .top-nav .nav-links a {
+      margin-left: 24px;
+      color: var(--ink-light);
+      text-decoration: none;
+      font-size: 14px;
+      transition: color 0.3s;
+    }
+    .top-nav .nav-links a:hover { color: var(--seal); }
+    .top-nav .nav-links a.active { color: var(--seal); border-bottom: 1px solid var(--seal); }
+
+    /* ===== 主题横幅：一眼看懂网站讲的是什么 ===== */
+    .home-banner {
+      position: relative;
+      padding: 150px 40px 90px;
+      text-align: center;
+      overflow: hidden;
+      background:
+        linear-gradient(180deg, rgba(43,36,24,0.72) 0%, rgba(43,36,24,0.55) 100%),
+        url('assets/images/hero-bg.jpg') center/cover no-repeat,
+        #2b2418;
+      color: var(--paper);
+      border-bottom: 4px solid rgba(139,46,46,0.6);
+    }
+    .banner-kicker {
+      font-size: 13px;
+      letter-spacing: 0.45em;
+      color: rgba(242,232,207,0.65);
+      margin-bottom: 18px;
+    }
+    .banner-title {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 96px;
+      letter-spacing: 0.2em;
+      color: #f2e8cf;
+      text-shadow: 0 0 40px rgba(242, 232, 207, 0.3);
+      margin-bottom: 20px;
+    }
+    .banner-event {
+      display: inline-block;
+      font-size: 17px;
+      letter-spacing: 0.3em;
+      color: #e8c896;
+      border-top: 1px solid rgba(232,200,150,0.35);
+      border-bottom: 1px solid rgba(232,200,150,0.35);
+      padding: 10px 20px;
+    }
+    .banner-line {
+      margin: 28px auto 0;
+      max-width: 660px;
+      font-size: 15px;
+      line-height: 2.1;
+      color: rgba(242,232,207,0.82);
+    }
+    .banner-actions { margin-top: 38px; position: relative; z-index: 3; }
+    .banner-restart {
+      margin-top: 16px;
+      background: transparent;
+      border: none;
+      color: rgba(242,232,207,0.45);
+      font-family: 'Noto Serif SC', 'SimSun', serif;
+      font-size: 12px;
+      letter-spacing: 0.2em;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+    .banner-restart:hover { color: rgba(242,232,207,0.8); }
+
+    /* 横幅飘动雾气 */
+    .banner-fog {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+      background: radial-gradient(ellipse, rgba(200,200,190,0.12), transparent 70%);
+      filter: blur(10px);
+      z-index: 1;
+    }
+    .banner-fog.f1 { width: 60%; height: 70%; left: -12%; top: 0; animation: fogDriftA 26s ease-in-out infinite alternate; }
+    .banner-fog.f2 { width: 50%; height: 60%; right: -12%; bottom: 0; animation: fogDriftB 32s ease-in-out infinite alternate; }
+    /* 横幅飘落火星/灰烬 */
+    .banner-ember {
+      position: absolute;
+      top: -10px;
+      width: 3px; height: 3px;
+      border-radius: 50%;
+      background: rgba(255,170,90,0.8);
+      box-shadow: 0 0 6px 2px rgba(255,140,60,0.45);
+      z-index: 2;
+      animation: emberFall linear infinite;
+    }
+    @keyframes emberFall {
+      0% { transform: translateY(0); opacity: 0; }
+      15% { opacity: 0.9; }
+      100% { transform: translateY(430px); opacity: 0; }
+    }
+    .home-banner > *:not(.banner-fog) { position: relative; z-index: 3; }
+
+    /* ===== 进度条 ===== */
+    .journey-bar {
+      max-width: 1000px;
+      margin: 0 auto 30px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+    }
+    .journey-chip {
+      background: var(--paper-dark);
+      border: 1px solid rgba(43,36,24,0.2);
+      padding: 12px 22px;
+      font-size: 13px;
+      color: var(--ink-light);
+      box-shadow: 3px 3px 0 var(--shadow);
+      min-width: 120px;
+    }
+    .journey-chip strong { color: var(--ink); font-size: 17px; }
+    .journey-chip.hint { color: var(--seal); border-color: rgba(139,46,46,0.5); }
+
+    /* ===== 地图 ===== */
+    .map-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 1000px;
+      margin: 0 auto;
+      background: var(--paper-dark);
+      border: 2px solid rgba(43,36,24,0.3);
+      box-shadow: 8px 8px 0 var(--shadow);
+      padding: 20px;
+    }
+    .map-svg { width: 100%; height: auto; display: block; }
+
+    .location-dot { cursor: pointer; transition: transform 0.3s; transform-box: fill-box; transform-origin: center; }
+    .location-dot .dot-ring { fill: #f2e8cf; stroke: var(--seal); stroke-width: 2.5; }
+    .location-dot .dot-img { }
+    .location-dot.locked .dot-img { filter: grayscale(1) opacity(0.3); }
+    .location-dot.locked .dot-ring { stroke: #999; opacity: 0.55; }
+    .location-dot:hover { transform: scale(1.18); }
+    .location-dot .label {
+      font-family: 'Noto Serif SC', serif;
+      font-size: 14px; fill: var(--ink);
+      paint-order: stroke; stroke: var(--paper-dark); stroke-width: 3;
+    }
+    .location-dot.locked .label { opacity: 0.5; }
+    .location-dot.done .dot-ring { stroke: var(--moss); stroke-width: 3.5; }
+    .location-dot.done .label { fill: var(--moss); }
+
+    .ending-dot { cursor: pointer; transition: all 0.3s; }
+    .ending-dot .star {
+      fill: var(--seal); stroke: var(--paper); stroke-width: 1.5;
+      animation: endingGlow 2s ease-in-out infinite;
+    }
+    @keyframes endingGlow { 0%,100% { opacity: 0.65; } 50% { opacity: 1; } }
+    .ending-dot.locked .star { fill: #999; opacity: 0.35; animation: none; }
+    .ending-dot .label {
+      font-family: 'Ma Shan Zheng', cursive; font-size: 16px; fill: var(--seal);
+      paint-order: stroke; stroke: var(--paper-dark); stroke-width: 3;
+    }
+    .ending-dot.locked .label { opacity: 0.4; }
+
+    .btn-vintage {
+      display: inline-block;
+      padding: 12px 36px;
+      background: var(--ink);
+      color: var(--paper);
+      border: none;
+      font-family: 'Noto Serif SC', serif;
+      font-size: 16px;
+      letter-spacing: 0.2em;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.3s;
+      text-decoration: none;
+    }
+    .btn-vintage:hover {
+      background: var(--seal);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px var(--shadow);
+    }
+    .page-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 100px 40px 60px;
+      min-height: 100vh;
+    }
+    .section-title {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 48px;
+      text-align: center;
+      margin-bottom: 16px;
+      color: var(--ink);
+    }
+    .section-subtitle {
+      text-align: center;
+      color: var(--ink-light);
+      font-size: 15px;
+      letter-spacing: 0.3em;
+      margin-bottom: 48px;
+    }
+
+    @media (max-width: 768px) {
+      .banner-title { font-size: 60px; }
+      .home-banner { padding: 56px 18px 52px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="top-nav">
+    <a href="index.html" class="logo">雾都1937</a>
+    <div class="nav-links">
+      <a href="index.html" class="active">城厢图</a>
+      <a href="pages/archive.html">档案柜</a>
+      <a href="pages/characters.html">人物谱</a>
+      <a href="pages/timeline.html">时间轴</a>
+    </div>
+  </nav>
+
+  <!-- 主题横幅：一眼看懂网站讲的是什么 -->
+  <header class="home-banner">
+    <span class="banner-fog f1"></span>
+    <span class="banner-fog f2"></span>
+    <p class="banner-kicker">1937 · 国府移驻重庆 ｜ 1938 — 1945 · 重庆大轰炸</p>
+    <h1 class="banner-title">雾都1937</h1>
+    <p class="banner-event">纪 念 “ 六 五 ” 大 隧 道 惨 案</p>
+    <p class="banner-line">
+      1937年全面抗战爆发，国民政府移驻重庆，沿海的工厂、学校、报馆沿江西迁——一座城就此扛起战争，也扛起了一个国家的后方。<br>
+      1941年6月5日夜，24架日机分三批轮番轰炸，较场口三段防空隧道内，近万平民窒息、踩踏，伤亡约2500人。<br>
+      走进这张地图，沿六处地点回到那一夜，看一座城如何在最黑的夜里，活了下来。
+    </p>
+    <div class="banner-actions">
+      <button class="btn-vintage" id="primary-btn" onclick="primaryAction()">走进雾都 · 第一幕</button><br>
+      <button class="banner-restart" onclick="restartJourney()">重新开始</button>
+    </div>
+  </header>
+
+  <div class="page-container">
+    <!-- 探索进度 -->
+    <div class="journey-bar">
+      <div class="journey-chip">已解锁地点<br><strong id="unlocked-count">1 / 6</strong></div>
+      <div class="journey-chip">已走过地点<br><strong id="done-count">0 / 6</strong></div>
+      <div class="journey-chip">已收集档案<br><strong id="collected-count">0</strong> 件</div>
+      <div class="journey-chip hint" id="ending-hint" style="display:none;">终章已在地图中央亮起</div>
+    </div>
+
+    <h2 class="section-title">重庆城区 · 1940年</h2>
+    <p class="section-subtitle">沿 着 六 处 地 点 ， 走 进 那 一 夜</p>
+
+    <div class="map-wrapper">
+      <svg class="map-svg" viewBox="0 0 1000 700" xmlns="http://www.w3.org/2000/svg">
+        <!-- 长江 -->
+        <path d="M 0 550 Q 200 520 400 560 T 1000 540 L 1000 700 L 0 700 Z"
+              fill="#b8c4c8" opacity="0.5"/>
+        <text x="100" y="620" fill="#7a8a8e" font-size="18" font-style="italic">长 江</text>
+
+        <!-- 嘉陵江 -->
+        <path d="M 0 200 Q 150 250 300 230 Q 400 280 450 350 L 450 400 Q 350 350 200 380 Q 100 370 0 390 Z"
+              fill="#b8c4c8" opacity="0.5"/>
+        <text x="50" y="290" fill="#7a8a8e" font-size="18" font-style="italic">嘉 陵 江</text>
+
+        <!-- 半岛轮廓 -->
+        <path d="M 450 350 Q 500 280 600 260 Q 750 240 850 300 Q 900 400 850 500 Q 750 580 600 570 Q 500 550 450 480 Z"
+              fill="#d4c9a8" stroke="#8a7d5a" stroke-width="2"/>
+
+        <!-- 山脊纹理 -->
+        <path d="M 500 350 Q 550 330 600 340 Q 650 320 700 335" fill="none" stroke="#a89878" stroke-width="1" opacity="0.5"/>
+        <path d="M 520 420 Q 580 400 640 415 Q 700 395 760 410" fill="none" stroke="#a89878" stroke-width="1" opacity="0.5"/>
+        <path d="M 550 480 Q 620 465 690 480" fill="none" stroke="#a89878" stroke-width="1" opacity="0.5"/>
+
+        <defs>
+          <clipPath id="clip-dock"><circle cx="480" cy="530" r="18"/></clipPath>
+          <clipPath id="clip-tunnel"><circle cx="620" cy="420" r="18"/></clipPath>
+          <clipPath id="clip-newspaper"><circle cx="700" cy="380" r="18"/></clipPath>
+          <clipPath id="clip-school"><circle cx="350" cy="180" r="18"/></clipPath>
+          <clipPath id="clip-airport"><circle cx="880" cy="580" r="18"/></clipPath>
+          <clipPath id="clip-ciqikou"><circle cx="180" cy="120" r="18"/></clipPath>
+        </defs>
+
+        <!-- 地点1：朝天门码头 · 林阿婆 -->
+        <g class="location-dot" data-scene="dock" onclick="enterScene('dock')">
+          <circle class="dot-ring" cx="480" cy="530" r="18"/>
+          <image class="dot-img" href="assets/images/char-worker.jpg" x="462" y="512" width="36" height="36" preserveAspectRatio="xMidYMid slice" clip-path="url(#clip-dock)"/>
+          <text class="label" x="480" y="564" text-anchor="middle">朝天门码头</text>
+        </g>
+
+        <!-- 地点2：较场口大隧道 · 林阿婆 -->
+        <g class="location-dot locked" data-scene="tunnel" onclick="enterScene('tunnel')">
+          <circle class="dot-ring" cx="620" cy="420" r="18"/>
+          <image class="dot-img" href="assets/images/char-worker.jpg" x="602" y="402" width="36" height="36" preserveAspectRatio="xMidYMid slice" clip-path="url(#clip-tunnel)"/>
+          <text class="label" x="620" y="454" text-anchor="middle">较场口大隧道</text>
+        </g>
+
+        <!-- 地点3：新华日报社 · 陈先生 -->
+        <g class="location-dot locked" data-scene="newspaper" onclick="enterScene('newspaper')">
+          <circle class="dot-ring" cx="700" cy="380" r="18"/>
+          <image class="dot-img" href="assets/images/char-editor.jpg" x="682" y="362" width="36" height="36" preserveAspectRatio="xMidYMid slice" clip-path="url(#clip-newspaper)"/>
+          <text class="label" x="700" y="358" text-anchor="middle">新华日报社</text>
+        </g>
+
+        <!-- 地点4：沙坪坝学校 · 苏同学 -->
+        <g class="location-dot locked" data-scene="school" onclick="enterScene('school')">
+          <circle class="dot-ring" cx="350" cy="180" r="18"/>
+          <image class="dot-img" href="assets/images/char-student.jpg" x="332" y="162" width="36" height="36" preserveAspectRatio="xMidYMid slice" clip-path="url(#clip-school)"/>
+          <text class="label" x="350" y="214" text-anchor="middle">沙坪坝学校</text>
+        </g>
+
+        <!-- 地点5：广阳坝机场 · 周太太 -->
+        <g class="location-dot locked" data-scene="airport" onclick="enterScene('airport')">
+          <circle class="dot-ring" cx="880" cy="580" r="18"/>
+          <image class="dot-img" href="assets/images/char-pilot.jpg" x="862" y="562" width="36" height="36" preserveAspectRatio="xMidYMid slice" clip-path="url(#clip-airport)"/>
+          <text class="label" x="880" y="614" text-anchor="middle">广阳坝机场</text>
+        </g>
+
+        <!-- 地点6：磁器口古镇 · 林阿婆 -->
+        <g class="location-dot locked" data-scene="ciqikou" onclick="enterScene('ciqikou')">
+          <circle class="dot-ring" cx="180" cy="120" r="18"/>
+          <image class="dot-img" href="assets/images/char-worker.jpg" x="162" y="102" width="36" height="36" preserveAspectRatio="xMidYMid slice" clip-path="url(#clip-ciqikou)"/>
+          <text class="label" x="180" y="92" text-anchor="middle">磁器口古镇</text>
+        </g>
+
+        <!-- 终章 -->
+        <g class="ending-dot locked" id="ending-dot" onclick="enterEnding()">
+          <polygon class="star" points="560,300 565,315 581,315 568,324 573,340 560,330 547,340 552,324 539,315 555,315"/>
+          <text class="label" x="560" y="288" text-anchor="middle">终章 · 天亮了</text>
+        </g>
+
+        <!-- 罗盘 -->
+        <g transform="translate(920, 80)">
+          <circle r="40" fill="none" stroke="#8a7d5a" stroke-width="1.5"/>
+          <circle r="5" fill="#8a7d5a"/>
+          <path d="M 0 -30 L 5 0 L 0 30 L -5 0 Z" fill="#8b2e2e"/>
+          <text y="-48" text-anchor="middle" fill="#8a7d5a" font-size="14" font-family="serif">北</text>
+        </g>
+
+        <!-- 图名 -->
+        <text x="500" y="60" text-anchor="middle" font-family="Ma Shan Zheng, cursive" font-size="28" fill="#5a4e3a">
+          重 庆 城 厢 图
+        </text>
+        <text x="500" y="85" text-anchor="middle" font-size="12" fill="#8a7d5a" letter-spacing="3">
+          民 国 二 十 九 年 · 绘
+        </text>
+      </svg>
+    </div>
+
+    <p style="text-align:center; margin-top:32px; color: var(--ink-light); font-size: 13px; letter-spacing: 0.1em;">
+      头像即每一幕的亲历者；灰色头像为尚未解锁，绿色描边为已走过的地点
+    </p>
+  </div>
+
+  <script src="assets/js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      loadProgress();
+
+      // 进度数字
+      document.getElementById('unlocked-count').textContent = GameState.unlocked.length + ' / 6';
+      document.getElementById('done-count').textContent = GameState.completed.length + ' / 6';
+      document.getElementById('collected-count').textContent = GameState.collected.length;
+
+      // 地图标记状态
+      document.querySelectorAll('.location-dot').forEach(dot => {
+        const scene = dot.dataset.scene;
+        if (GameState.unlocked.includes(scene)) dot.classList.remove('locked');
+        if (GameState.completed.includes(scene)) dot.classList.add('done');
+      });
+
+      // 终章
+      if (GameState.endingUnlocked) {
+        document.getElementById('ending-dot').classList.remove('locked');
+        document.getElementById('ending-hint').style.display = 'block';
+      }
+
+      // 主按钮文案：有进度就"继续探索"，全新则"第一幕"
+      const btn = document.getElementById('primary-btn');
+      if (GameState.endingUnlocked && GameState.completed.length === 6) {
+        btn.textContent = '进入终章 · 天亮了';
+      } else if (GameState.completed.length === 0) {
+        btn.textContent = '走进雾都 · 第一幕';
+      } else {
+        const next = SCENE_CHAIN.find(s =>
+          GameState.unlocked.includes(s) && !GameState.completed.includes(s));
+        if (next) {
+          btn.textContent = '继续探索 · ' + getSceneName(next);
+        }
+      }
+
+      // 横幅飘落火星
+      const banner = document.querySelector('.home-banner');
+      for (let i = 0; i < 18; i++) {
+        const e = document.createElement('span');
+        e.className = 'banner-ember';
+        e.style.left = Math.random() * 100 + '%';
+        e.style.animationDelay = (Math.random() * 8) + 's';
+        e.style.animationDuration = (6 + Math.random() * 6) + 's';
+        banner.appendChild(e);
+      }
+    });
+
+    // 主按钮：进入下一个待探索地点；全新进度则开始第一幕
+    function primaryAction() {
+      if (GameState.endingUnlocked && GameState.completed.length === 6) {
+        enterEnding();
+        return;
+      }
+      const next = SCENE_CHAIN.find(s =>
+        GameState.unlocked.includes(s) && !GameState.completed.includes(s));
+      if (next) {
+        playSound('click');
+        fogTransition(() => { window.location.href = 'pages/scenes/' + next + '.html'; });
+      } else {
+        startJourney();
+      }
+    }
+
+    function enterScene(sceneId) {
+      if (!GameState.unlocked.includes(sceneId)) {
+        showToast('🌫️ 此处仍被雾气遮蔽，先从第一幕开始');
+        return;
+      }
+      playSound('click');
+      fogTransition(() => {
+        window.location.href = 'pages/scenes/' + sceneId + '.html';
+      });
+    }
+
+    function enterEnding() {
+      if (!GameState.endingUnlocked) {
+        showToast('🕯️ 走完六处地点，终章才会亮起');
+        return;
+      }
+      playSound('click');
+      fogTransition(() => {
+        window.location.href = 'pages/ending.html';
+      });
+    }
+  </script>
+</body>
+</html>
